@@ -23,6 +23,8 @@ const Deal = sequelize.define(
         model: Customer,
         key: "id",
       },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     amount: {
       type: DataTypes.DECIMAL(12, 2),
@@ -62,6 +64,10 @@ const Deal = sequelize.define(
   },
 );
 
-Deal.belongsTo(Customer, { foreignKey: "customerId" });
+Deal.belongsTo(Customer, {
+  foreignKey: "customerId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 export default Deal;
