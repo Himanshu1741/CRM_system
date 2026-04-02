@@ -92,6 +92,8 @@ export const createDeal = async (req, res) => {
       probability: probability || 0,
       expectedCloseDate: expectedCloseDate || null,
       notes: notes || null,
+      assignedTo: req.user?.id || null,
+      createdBy: req.user?.id || null,
     });
 
     const dealWithCustomer = await Deal.findByPk(deal.id, {
