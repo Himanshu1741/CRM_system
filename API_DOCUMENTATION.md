@@ -22,15 +22,15 @@ The CRM System is a Node.js/Express backend REST API built with MySQL and Sequel
 
 ### Tables
 
-| Table | Purpose | Key Fields |
-|-------|---------|-----------|
-| **users** | System users | id, firstName, lastName, email, password, role, isActive |
-| **leads** | Sales leads | id, firstName, lastName, email, phone, company, status, assignedTo |
-| **customers** | Customer records | id, firstName, lastName, email, company, industry, status, totalSpent |
-| **deals** | Sales deals | id, title, amount, stage, customerId, assignedTo, probability |
-| **tasks** | Task management | id, title, description, status, priority, dueDate, assignedTo |
-| **notes** | Notes | id, title, content, leadId, customerId, dealId, createdBy |
-| **activities** | Activity log | id, type, description, leadId, customerId, dealId, createdBy |
+| Table          | Purpose          | Key Fields                                                            |
+| -------------- | ---------------- | --------------------------------------------------------------------- |
+| **users**      | System users     | id, firstName, lastName, email, password, role, isActive              |
+| **leads**      | Sales leads      | id, firstName, lastName, email, phone, company, status, assignedTo    |
+| **customers**  | Customer records | id, firstName, lastName, email, company, industry, status, totalSpent |
+| **deals**      | Sales deals      | id, title, amount, stage, customerId, assignedTo, probability         |
+| **tasks**      | Task management  | id, title, description, status, priority, dueDate, assignedTo         |
+| **notes**      | Notes            | id, title, content, leadId, customerId, dealId, createdBy             |
+| **activities** | Activity log     | id, type, description, leadId, customerId, dealId, createdBy          |
 
 ## API Endpoints
 
@@ -39,6 +39,7 @@ The CRM System is a Node.js/Express backend REST API built with MySQL and Sequel
 All user authentication endpoints are under `/api/auth`
 
 #### Register User
+
 ```http
 POST /api/auth/register
 Content-Type: application/json
@@ -51,6 +52,7 @@ Content-Type: application/json
 ```
 
 **Response (201):**
+
 ```json
 {
   "success": true,
@@ -65,6 +67,7 @@ Content-Type: application/json
 ```
 
 #### Login User
+
 ```http
 POST /api/auth/login
 Content-Type: application/json
@@ -76,6 +79,7 @@ Content-Type: application/json
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -90,12 +94,14 @@ Content-Type: application/json
 ```
 
 #### Get Current User (Protected)
+
 ```http
 GET /api/auth/me
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -115,11 +121,13 @@ Authorization: Bearer <JWT_TOKEN>
 Base endpoint: `/api/leads`
 
 #### Get All Leads
+
 ```http
 GET /api/leads
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -137,11 +145,13 @@ GET /api/leads
 ```
 
 #### Get Lead by ID
+
 ```http
 GET /api/leads/:id
 ```
 
 #### Create Lead (Protected)
+
 ```http
 POST /api/leads
 Authorization: Bearer <JWT_TOKEN>
@@ -157,6 +167,7 @@ Content-Type: application/json
 ```
 
 #### Update Lead (Protected)
+
 ```http
 PUT /api/leads/:id
 Authorization: Bearer <JWT_TOKEN>
@@ -168,6 +179,7 @@ Content-Type: application/json
 ```
 
 #### Delete Lead (Protected)
+
 ```http
 DELETE /api/leads/:id
 Authorization: Bearer <JWT_TOKEN>
@@ -180,6 +192,7 @@ Authorization: Bearer <JWT_TOKEN>
 Base endpoint: `/api/customers`
 
 Similar CRUD operations as Leads:
+
 - `GET /api/customers` - Get all customers
 - `GET /api/customers/:id` - Get customer details
 - `POST /api/customers` - Create customer (Protected)
@@ -187,6 +200,7 @@ Similar CRUD operations as Leads:
 - `DELETE /api/customers/:id` - Delete customer (Protected)
 
 **Customer Fields:**
+
 ```json
 {
   "firstName": "John",
@@ -206,6 +220,7 @@ Similar CRUD operations as Leads:
 Base endpoint: `/api/deals`
 
 **Deal Fields:**
+
 ```json
 {
   "title": "Enterprise License Deal",
@@ -225,6 +240,7 @@ Similar CRUD operations as Leads with customer relationship support.
 Base endpoint: `/api/tasks`
 
 **Task Fields:**
+
 ```json
 {
   "title": "Follow up with client",
@@ -242,6 +258,7 @@ Base endpoint: `/api/tasks`
 Base endpoint: `/api/notes`
 
 **Note Fields:**
+
 ```json
 {
   "title": "Meeting notes",
@@ -259,6 +276,7 @@ Base endpoint: `/api/notes`
 Base endpoint: `/api/activities`
 
 **Activity Fields:**
+
 ```json
 {
   "type": "call",
@@ -290,6 +308,7 @@ Authorization: Bearer <JWT_TOKEN>
 ### Protected Operations
 
 The following operations require authentication:
+
 - ✅ POST (Create) - All resources
 - ✅ PUT (Update) - All resources
 - ✅ DELETE - All resources
@@ -309,14 +328,14 @@ All error responses follow this format:
 
 ### Common HTTP Status Codes
 
-| Status | Meaning |
-|--------|---------|
-| 200 | OK - Request successful |
-| 201 | Created - Resource created successfully |
-| 400 | Bad Request - Missing/invalid parameters |
-| 401 | Unauthorized - Invalid/missing JWT token |
-| 404 | Not Found - Resource doesn't exist |
-| 500 | Internal Server Error - Server issue |
+| Status | Meaning                                  |
+| ------ | ---------------------------------------- |
+| 200    | OK - Request successful                  |
+| 201    | Created - Resource created successfully  |
+| 400    | Bad Request - Missing/invalid parameters |
+| 401    | Unauthorized - Invalid/missing JWT token |
+| 404    | Not Found - Resource doesn't exist       |
+| 500    | Internal Server Error - Server issue     |
 
 ---
 
@@ -350,7 +369,7 @@ CORS_ORIGIN=http://localhost:5173
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - MySQL 8+
 - npm or yarn
 
@@ -423,6 +442,7 @@ curl -X POST http://localhost:5000/api/leads \
 ## Role-Based Access Control
 
 Currently supports 3 user roles:
+
 - **admin** - Full access to all operations
 - **manager** - Manage team leads/customers
 - **user** - Standard user access (default)
@@ -501,6 +521,6 @@ MIT
 
 ---
 
-**Last Updated:** 2026-04-02  
-**API Version:** 1.0.0  
+**Last Updated:** 2026-04-02
+**API Version:** 1.0.0
 **Database:** MySQL (crm_system)

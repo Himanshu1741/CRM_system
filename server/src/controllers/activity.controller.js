@@ -1,4 +1,6 @@
 import Activity from "../models/Activity.js";
+import { handleError, handleSuccess } from "../utils/errorHandler.js";
+import { validateRequired } from "../utils/validation.js";
 
 export const getActivities = async (req, res) => {
   try {
@@ -10,59 +12,86 @@ export const getActivities = async (req, res) => {
       order: [["createdAt", "DESC"]],
     });
 
-    res.status(200).json({ success: true, data: activities });
+    handleSuccess(res, activities, "Activities retrieved successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const getActivity = async (req, res) => {
   try {
-    const activity = await Activity.findByPk(req.params.id);
+    const { id } = req.params;
 
-    if (!activity) {
-      return res.status(404).json({ message: "Activity not found" });
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid activity ID" });
     }
 
-    res.status(200).json({ success: true, data: activity });
+    const activity = await Activity.findByPk(id);
+
+    if (!activity) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Activity not found" });
+    }
+
+    handleSuccess(res, activity, "Activity retrieved successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const createActivity = async (req, res) => {
   try {
-    const { type, description } = req.body;
+    const { type, description, leadId, customerId, dealId } = req.body;
 
-    if (!type || !description) {
-      return res
-        .status(400)
-        .json({ message: "Type and description are required" });
+    // Validate required fields
+    const validation = validateRequired(["type", "description"], req.body);
+    if (!validation.isValid) {
+      return res.status(400).json({
+        success: false,
+        message: `Missing required fields: ${validation.missing.join(", ")}`,
+      });
     }
 
     const activity = await Activity.create({
       type,
       description,
+      leadId: leadId || null,
+      customerId: customerId || null,
+      dealId: dealId || null,
+      createdBy: req.user?.id || null,
     });
 
-    res.status(201).json({ success: true, data: activity });
+    handleSuccess(res, activity, "Activity created successfully", 201);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const deleteActivity = async (req, res) => {
   try {
-    const activity = await Activity.findByPk(req.params.id);
+    const { id } = req.params;
+
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid activity ID" });
+    }
+
+    const activity = await Activity.findByPk(id);
 
     if (!activity) {
-      return res.status(404).json({ message: "Activity not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Activity not found" });
     }
 
     await activity.destroy();
 
-    res.status(200).json({ success: true, message: "Activity deleted" });
+    handleSuccess(res, { id }, "Activity deleted successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };

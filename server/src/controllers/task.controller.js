@@ -1,4 +1,6 @@
 import Task from "../models/Task.js";
+import { handleError, handleSuccess } from "../utils/errorHandler.js";
+import { validateRequired } from "../utils/validation.js";
 
 export const getTasks = async (req, res) => {
   try {
@@ -11,23 +13,33 @@ export const getTasks = async (req, res) => {
       order: [["dueDate", "ASC"]],
     });
 
-    res.status(200).json({ success: true, data: tasks });
+    handleSuccess(res, tasks, "Tasks retrieved successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const getTask = async (req, res) => {
   try {
-    const task = await Task.findByPk(req.params.id);
+    const { id } = req.params;
 
-    if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid task ID" });
     }
 
-    res.status(200).json({ success: true, data: task });
+    const task = await Task.findByPk(id);
+
+    if (!task) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
+    }
+
+    handleSuccess(res, task, "Task retrieved successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
@@ -35,52 +47,77 @@ export const createTask = async (req, res) => {
   try {
     const { title, description, dueDate, priority, status } = req.body;
 
-    if (!title) {
-      return res.status(400).json({ message: "Title is required" });
+    // Validate required fields
+    const validation = validateRequired(["title"], req.body);
+    if (!validation.isValid) {
+      return res.status(400).json({
+        success: false,
+        message: `Missing required fields: ${validation.missing.join(", ")}`,
+      });
     }
 
     const task = await Task.create({
       title,
-      description,
-      dueDate,
+      description: description || null,
+      dueDate: dueDate || null,
       priority: priority || "medium",
       status: status || "pending",
     });
 
-    res.status(201).json({ success: true, data: task });
+    handleSuccess(res, task, "Task created successfully", 201);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const updateTask = async (req, res) => {
   try {
-    const task = await Task.findByPk(req.params.id);
+    const { id } = req.params;
+
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid task ID" });
+    }
+
+    const task = await Task.findByPk(id);
 
     if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
     }
 
     await task.update(req.body);
 
-    res.status(200).json({ success: true, data: task });
+    handleSuccess(res, task, "Task updated successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const deleteTask = async (req, res) => {
   try {
-    const task = await Task.findByPk(req.params.id);
+    const { id } = req.params;
+
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid task ID" });
+    }
+
+    const task = await Task.findByPk(id);
 
     if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
     }
 
     await task.destroy();
 
-    res.status(200).json({ success: true, message: "Task deleted" });
+    handleSuccess(res, { id }, "Task deleted successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };

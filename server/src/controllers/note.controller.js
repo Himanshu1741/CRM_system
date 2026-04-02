@@ -1,79 +1,118 @@
 import Note from "../models/Note.js";
+import { handleError, handleSuccess } from "../utils/errorHandler.js";
+import { validateRequired } from "../utils/validation.js";
 
 export const getNotes = async (req, res) => {
   try {
     const notes = await Note.findAll({
       order: [["createdAt", "DESC"]],
     });
-    res.status(200).json({ success: true, data: notes });
+    handleSuccess(res, notes, "Notes retrieved successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const getNote = async (req, res) => {
   try {
-    const note = await Note.findByPk(req.params.id);
+    const { id } = req.params;
 
-    if (!note) {
-      return res.status(404).json({ message: "Note not found" });
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid note ID" });
     }
 
-    res.status(200).json({ success: true, data: note });
+    const note = await Note.findByPk(id);
+
+    if (!note) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Note not found" });
+    }
+
+    handleSuccess(res, note, "Note retrieved successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const createNote = async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, leadId, customerId, dealId } = req.body;
 
-    if (!title || !content) {
-      return res
-        .status(400)
-        .json({ message: "Title and content are required" });
+    // Validate required fields
+    const validation = validateRequired(["title", "content"], req.body);
+    if (!validation.isValid) {
+      return res.status(400).json({
+        success: false,
+        message: `Missing required fields: ${validation.missing.join(", ")}`,
+      });
     }
 
     const note = await Note.create({
       title,
       content,
+      leadId: leadId || null,
+      customerId: customerId || null,
+      dealId: dealId || null,
+      createdBy: req.user?.id || null,
     });
 
-    res.status(201).json({ success: true, data: note });
+    handleSuccess(res, note, "Note created successfully", 201);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const updateNote = async (req, res) => {
   try {
-    const note = await Note.findByPk(req.params.id);
+    const { id } = req.params;
+
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid note ID" });
+    }
+
+    const note = await Note.findByPk(id);
 
     if (!note) {
-      return res.status(404).json({ message: "Note not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Note not found" });
     }
 
     await note.update(req.body);
 
-    res.status(200).json({ success: true, data: note });
+    handleSuccess(res, note, "Note updated successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const deleteNote = async (req, res) => {
   try {
-    const note = await Note.findByPk(req.params.id);
+    const { id } = req.params;
+
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid note ID" });
+    }
+
+    const note = await Note.findByPk(id);
 
     if (!note) {
-      return res.status(404).json({ message: "Note not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Note not found" });
     }
 
     await note.destroy();
 
-    res.status(200).json({ success: true, message: "Note deleted" });
+    handleSuccess(res, { id }, "Note deleted successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };

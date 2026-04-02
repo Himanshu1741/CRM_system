@@ -1,80 +1,144 @@
 import Lead from "../models/Lead.js";
+import { handleError, handleSuccess } from "../utils/errorHandler.js";
+import { validateEmail, validateRequired } from "../utils/validation.js";
 
 export const getLeads = async (req, res) => {
   try {
     const leads = await Lead.findAll();
-    res.status(200).json({ success: true, data: leads });
+    handleSuccess(res, leads, "Leads retrieved successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const getLead = async (req, res) => {
   try {
-    const lead = await Lead.findByPk(req.params.id);
+    const { id } = req.params;
 
-    if (!lead) {
-      return res.status(404).json({ message: "Lead not found" });
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid lead ID" });
     }
 
-    res.status(200).json({ success: true, data: lead });
+    const lead = await Lead.findByPk(id);
+
+    if (!lead) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Lead not found" });
+    }
+
+    handleSuccess(res, lead, "Lead retrieved successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const createLead = async (req, res) => {
   try {
-    const { name, email, phone, company, status, source, notes } = req.body;
-
-    if (!name || !email) {
-      return res.status(400).json({ message: "Please provide name and email" });
-    }
-
-    const lead = await Lead.create({
-      name,
+    const {
+      firstName,
+      lastName,
       email,
       phone,
       company,
+      status,
+      source,
+      notes,
+    } = req.body;
+
+    // Validate required fields
+    const validation = validateRequired(
+      ["firstName", "lastName", "email"],
+      req.body,
+    );
+    if (!validation.isValid) {
+      return res.status(400).json({
+        success: false,
+        message: `Missing required fields: ${validation.missing.join(", ")}`,
+      });
+    }
+
+    // Validate email format
+    if (!validateEmail(email)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid email format" });
+    }
+
+    const lead = await Lead.create({
+      firstName,
+      lastName,
+      email,
+      phone: phone || null,
+      company: company || null,
       status: status || "new",
       source: source || "website",
-      notes,
+      notes: notes || null,
     });
 
-    res.status(201).json({ success: true, data: lead });
+    handleSuccess(res, lead, "Lead created successfully", 201);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const updateLead = async (req, res) => {
   try {
-    const lead = await Lead.findByPk(req.params.id);
+    const { id } = req.params;
+
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid lead ID" });
+    }
+
+    const lead = await Lead.findByPk(id);
 
     if (!lead) {
-      return res.status(404).json({ message: "Lead not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Lead not found" });
+    }
+
+    // Validate email if being updated
+    if (req.body.email && !validateEmail(req.body.email)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid email format" });
     }
 
     await lead.update(req.body);
 
-    res.status(200).json({ success: true, data: lead });
+    handleSuccess(res, lead, "Lead updated successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const deleteLead = async (req, res) => {
   try {
-    const lead = await Lead.findByPk(req.params.id);
+    const { id } = req.params;
+
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid lead ID" });
+    }
+
+    const lead = await Lead.findByPk(id);
 
     if (!lead) {
-      return res.status(404).json({ message: "Lead not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Lead not found" });
     }
 
     await lead.destroy();
 
-    res.status(200).json({ success: true, message: "Lead deleted" });
+    handleSuccess(res, { id }, "Lead deleted successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };

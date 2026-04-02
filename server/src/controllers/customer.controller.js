@@ -1,32 +1,45 @@
 import Customer from "../models/Customer.js";
+import { handleError, handleSuccess } from "../utils/errorHandler.js";
+import { validateEmail, validateRequired } from "../utils/validation.js";
 
 export const getCustomers = async (req, res) => {
   try {
     const customers = await Customer.findAll();
-    res.status(200).json({ success: true, data: customers });
+    handleSuccess(res, customers, "Customers retrieved successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const getCustomer = async (req, res) => {
   try {
-    const customer = await Customer.findByPk(req.params.id);
+    const { id } = req.params;
 
-    if (!customer) {
-      return res.status(404).json({ message: "Customer not found" });
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid customer ID" });
     }
 
-    res.status(200).json({ success: true, data: customer });
+    const customer = await Customer.findByPk(id);
+
+    if (!customer) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Customer not found" });
+    }
+
+    handleSuccess(res, customer, "Customer retrieved successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const createCustomer = async (req, res) => {
   try {
     const {
-      name,
+      firstName,
+      lastName,
       email,
       phone,
       company,
@@ -40,59 +53,102 @@ export const createCustomer = async (req, res) => {
       notes,
     } = req.body;
 
-    if (!name || !email) {
-      return res.status(400).json({ message: "Please provide name and email" });
+    // Validate required fields
+    const validation = validateRequired(
+      ["firstName", "lastName", "email"],
+      req.body,
+    );
+    if (!validation.isValid) {
+      return res.status(400).json({
+        success: false,
+        message: `Missing required fields: ${validation.missing.join(", ")}`,
+      });
+    }
+
+    // Validate email format
+    if (!validateEmail(email)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid email format" });
     }
 
     const customer = await Customer.create({
-      name,
+      firstName,
+      lastName,
       email,
-      phone,
-      company,
-      industry,
-      address,
-      city,
-      state,
-      zipCode,
-      country,
+      phone: phone || null,
+      company: company || null,
+      industry: industry || null,
+      address: address || null,
+      city: city || null,
+      state: state || null,
+      zipCode: zipCode || null,
+      country: country || null,
       status: status || "prospect",
-      notes,
+      notes: notes || null,
     });
 
-    res.status(201).json({ success: true, data: customer });
+    handleSuccess(res, customer, "Customer created successfully", 201);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const updateCustomer = async (req, res) => {
   try {
-    const customer = await Customer.findByPk(req.params.id);
+    const { id } = req.params;
+
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid customer ID" });
+    }
+
+    const customer = await Customer.findByPk(id);
 
     if (!customer) {
-      return res.status(404).json({ message: "Customer not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Customer not found" });
+    }
+
+    // Validate email if being updated
+    if (req.body.email && !validateEmail(req.body.email)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid email format" });
     }
 
     await customer.update(req.body);
 
-    res.status(200).json({ success: true, data: customer });
+    handleSuccess(res, customer, "Customer updated successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
 
 export const deleteCustomer = async (req, res) => {
   try {
-    const customer = await Customer.findByPk(req.params.id);
+    const { id } = req.params;
+
+    if (!id || isNaN(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid customer ID" });
+    }
+
+    const customer = await Customer.findByPk(id);
 
     if (!customer) {
-      return res.status(404).json({ message: "Customer not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Customer not found" });
     }
 
     await customer.destroy();
 
-    res.status(200).json({ success: true, message: "Customer deleted" });
+    handleSuccess(res, { id }, "Customer deleted successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 };
