@@ -8,6 +8,7 @@
     "server": "cd server && npm start",
     "client": "cd client && npm run dev",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "start:all": "node start-all.js",
     "install-all": "cd server && npm install && cd ../client && npm install"
   },
   "keywords": [
