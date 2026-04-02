@@ -35,7 +35,7 @@ export default function Deals() {
   const [editingId, setEditingId] = useState(null);
   const [filters, setFilters] = useState({});
   const [formData, setFormData] = useState({
-    dealName: "",
+    title: "",
     amount: "",
     stage: "prospecting",
     probability: "0",
@@ -46,7 +46,7 @@ export default function Deals() {
 
   const filterFields = [
     {
-      name: "dealName",
+      name: "title",
       label: "Deal Name",
       type: "text",
       placeholder: "Search by deal name...",
@@ -117,7 +117,7 @@ export default function Deals() {
     if (deal) {
       setEditingId(deal.id);
       setFormData({
-        dealName: deal.dealName || "",
+        title: deal.title || "",
         amount: deal.amount || "",
         stage: deal.stage || "prospecting",
         probability: deal.probability || "0",
@@ -128,7 +128,7 @@ export default function Deals() {
     } else {
       setEditingId(null);
       setFormData({
-        dealName: "",
+        title: "",
         amount: "",
         stage: "prospecting",
         probability: "0",
@@ -151,7 +151,7 @@ export default function Deals() {
   };
 
   const handleSave = async () => {
-    if (!formData.dealName || !formData.amount) {
+    if (!formData.title || !formData.amount) {
       setError("Please fill in all required fields");
       return;
     }
@@ -252,7 +252,7 @@ export default function Deals() {
             {deals && deals.length > 0 ? (
               deals.map((deal) => (
                 <TableRow key={deal.id} hover>
-                  <TableCell>{deal.dealName}</TableCell>
+                  <TableCell>{deal.title}</TableCell>
                   <TableCell>₹{deal.amount}</TableCell>
                   <TableCell>{deal.stage}</TableCell>
                   <TableCell>{deal.probability}%</TableCell>
@@ -301,8 +301,8 @@ export default function Deals() {
         >
           <TextField
             label="Deal Name"
-            name="dealName"
-            value={formData.dealName}
+            name="title"
+            value={formData.title}
             onChange={handleInputChange}
             fullWidth
             required
