@@ -2,6 +2,7 @@ import "dotenv/config";
 import mysql from "mysql2/promise";
 import app from "./app.js";
 import sequelize from "./config/db.js";
+import { seedDefaultUser } from "./seeds/seedUsers.js";
 
 const PORT = process.env.PORT || 5000;
 const DB_NAME = process.env.DB_NAME;
@@ -23,6 +24,10 @@ async function initializeDatabase() {
     // Now sync with the database
     await sequelize.sync({ force: true });
     console.log("Database connected");
+
+    // Seed default user
+    await seedDefaultUser();
+
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
