@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import PeopleIcon from "@mui/icons-material/People";
+import PersonIcon from "@mui/icons-material/Person";
+import TaskIcon from "@mui/icons-material/Task";
 import {
+  Alert,
   Box,
-  Grid,
-  Paper,
-  Typography,
   Card,
   CardContent,
   CircularProgress,
-  Alert,
-} from '@mui/material';
-import PeopleIcon from '@mui/icons-material/People';
-import PersonIcon from '@mui/icons-material/Person';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import TaskIcon from '@mui/icons-material/Task';
-import { leadsAPI, customersAPI, dealsAPI, tasksAPI } from '../services/api';
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { customersAPI, dealsAPI, leadsAPI, tasksAPI } from "../services/api";
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -23,7 +23,7 @@ export default function Dashboard() {
     totalTasks: 0,
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchDashboardStats();
@@ -46,7 +46,7 @@ export default function Dashboard() {
         totalTasks: tasksRes.data.data?.length || 0,
       });
     } catch (err) {
-      setError('Failed to load dashboard statistics');
+      setError("Failed to load dashboard statistics");
       console.error(err);
     } finally {
       setLoading(false);
@@ -54,14 +54,20 @@ export default function Dashboard() {
   };
 
   const StatCard = ({ label, value, icon, color }) => (
-    <Card sx={{ height: '100%' }}>
+    <Card sx={{ height: "100%" }}>
       <CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <Box>
             <Typography color="textSecondary" gutterBottom>
               {label}
             </Typography>
-            <Typography variant="h4" sx={{ fontWeight: 'bold', color }}>
+            <Typography variant="h4" sx={{ fontWeight: "bold", color }}>
               {value}
             </Typography>
           </Box>
@@ -73,7 +79,14 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
         <CircularProgress />
       </Box>
     );
@@ -81,12 +94,12 @@ export default function Dashboard() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" sx={{ mb: 3, fontWeight:'bold' }}>
+      <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
         Dashboard
       </Typography>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>
+        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError("")}>
           {error}
         </Alert>
       )}
@@ -127,19 +140,14 @@ export default function Dashboard() {
       </Grid>
 
       <Paper sx={{ mt: 4, p: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
           Quick Stats
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          Welcome to your CRM Dashboard! Manage your leads, customers, deals, and tasks from here.
+          Welcome to your CRM Dashboard! Manage your leads, customers, deals,
+          and tasks from here.
         </Typography>
       </Paper>
     </Box>
-  );
-}
-          <p className="text-3xl font-bold mt-2">$0</p>
-        </div>
-      </div>
-    </div>
   );
 }
