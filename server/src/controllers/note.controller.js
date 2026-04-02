@@ -5,7 +5,7 @@ import { validateRequired } from "../utils/validation.js";
 export const getNotes = async (req, res) => {
   try {
     const notes = await Note.findAll({
-      order: [["createdAt", "DESC"]],
+      order: [["id", "DESC"]],
     });
     handleSuccess(res, notes, "Notes retrieved successfully");
   } catch (error) {
