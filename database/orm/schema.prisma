@@ -1,0 +1,131 @@
+// This is the Prisma schema file
+// Define your data model by uncommenting sections below
+
+// datasource db {
+//   provider = "mysql"
+//   url      = env("DATABASE_URL")
+// }
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// model User {
+//   id    Int     @id @default(autoincrement())
+//   name  String
+//   email String  @unique
+//   password String
+//   role  String  @default("user") // 'admin', 'manager', 'user'
+//   isActive Boolean @default(true)
+//
+//   createdLeads    Lead[]     @relation("CreatedLeads")
+//   assignedLeads   Lead[]     @relation("AssignedLeads")
+//   createdCustomers Customer[] @relation("CreatedCustomers")
+//   assignedCustomers Customer[] @relation("AssignedCustomers")
+//   createdDeals    Deal[]     @relation("CreatedDeals")
+//   assignedDeals   Deal[]     @relation("AssignedDeals")
+//   activities      Activity[]
+//
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Lead {
+//   id        Int     @id @default(autoincrement())
+//   firstName String
+//   lastName  String
+//   email     String
+//   phone     String?
+//   company   String?
+//   status    String  @default("new") // 'new', 'contacted', 'qualified', 'unqualified'
+//   source    String  @default("website")
+//   notes     String? @db.Text
+//
+//   assignedTo  User?   @relation("AssignedLeads", fields: [assignedToId], references: [id])
+//   assignedToId Int?
+//
+//   createdBy   User    @relation("CreatedLeads", fields: [createdById], references: [id])
+//   createdById Int
+//
+//   activities Activity[]
+//
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Customer {
+//   id        Int     @id @default(autoincrement())
+//   firstName String
+//   lastName  String
+//   email     String
+//   phone     String?
+//   company   String?
+//   industry  String?
+//   address   String?
+//   city      String?
+//   state     String?
+//   zipCode   String?
+//   country   String?
+//   status    String  @default("prospect")
+//   totalSpent Decimal @default(0) @db.Decimal(12, 2)
+//   notes     String? @db.Text
+//
+//   assignedTo  User?   @relation("AssignedCustomers", fields: [assignedToId], references: [id])
+//   assignedToId Int?
+//
+//   createdBy   User    @relation("CreatedCustomers", fields: [createdById], references: [id])
+//   createdById Int
+//
+//   deals   Deal[]
+//   activities Activity[]
+//
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Deal {
+//   id        Int     @id @default(autoincrement())
+//   title     String
+//   description String? @db.Text
+//
+//   customer   Customer @relation(fields: [customerId], references: [id])
+//   customerId Int
+//
+//   amount    Decimal  @db.Decimal(12, 2)
+//   stage     String   @default("prospect")
+//   probability Int    @default(0)
+//   expectedCloseDate DateTime?
+//   actualCloseDate DateTime?
+//   notes     String?  @db.Text
+//
+//   assignedTo  User    @relation("AssignedDeals", fields: [assignedToId], references: [id])
+//   assignedToId Int
+//
+//   createdBy   User    @relation("CreatedDeals", fields: [createdById], references: [id])
+//   createdById Int
+//
+//   activities Activity[]
+//
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Activity {
+//   id          Int     @id @default(autoincrement())
+//   type        String
+//   description String  @db.Text
+//
+//   lead   Lead?   @relation(fields: [leadId], references: [id])
+//   leadId Int?
+//
+//   customer   Customer? @relation(fields: [customerId], references: [id])
+//   customerId Int?
+//
+//   deal   Deal?   @relation(fields: [dealId], references: [id])
+//   dealId Int?
+//
+//   createdBy   User    @relation(fields: [createdById], references: [id])
+//   createdById Int
+//
+//   createdAt DateTime @default(now())
+// }
