@@ -152,18 +152,35 @@ export default function Deals() {
 
   const handleSave = async () => {
     if (!formData.title || !formData.amount || !formData.customerId) {
-      setError("Please fill in all required fields (Deal Name, Amount, Customer)");
+      setError(
+        "Please fill in all required fields (Deal Name, Amount, Customer)",
+      );
       return;
     }
 
     try {
+      const customerId = parseInt(formData.customerId);
+      const amount = parseFloat(formData.amount);
+      const probability = parseInt(formData.probability);
+
+      // Validate parsed values
+      if (isNaN(customerId) || isNaN(amount) || isNaN(probability)) {
+        setError("Invalid numeric values. Please check your input.");
+        return;
+      }
+
+      if (amount <= 0) {
+        setError("Amount must be greater than 0");
+        return;
+      }
+
       const dataToSend = {
         ...formData,
-        customerId: parseInt(formData.customerId),
-        amount: parseFloat(formData.amount),
-        probability: parseInt(formData.probability),
+        customerId,
+        amount,
+        probability,
       };
-      
+
       if (editingId) {
         await dealsAPI.update(editingId, dataToSend);
       } else {
@@ -173,8 +190,9 @@ export default function Deals() {
       handleCloseDialog();
       setError("");
     } catch (err) {
-      setError("Failed to save deal");
-      console.error(err);
+      const errorMsg = err.response?.data?.message || err.message || "Failed to save deal";
+      setError(errorMsg);
+      console.error("Save error:", err);
     }
   };
 
