@@ -21,24 +21,28 @@ We created a **complete one-command startup solution** that allows you to start 
 ## ⚡ FASTEST WAY TO START (Pick One)
 
 ### **🔥 Option 1: Double-Click (EASIEST)**
+
 1. Open `d:\crm-system\` folder in Windows Explorer
 2. **Double-click** `START-ALL.bat`
 3. Wait for services to start
 4. Open **http://localhost:5173** in browser 🎉
 
 ### **💻 Option 2: Command Line (Quick)**
+
 ```bash
 cd d:\crm-system
 npm run start-all
 ```
 
 ### **🟦 Option 3: PowerShell**
+
 ```powershell
 cd d:\crm-system
 .\START-ALL.ps1
 ```
 
 ### **✔️ Option 4: Verify First, Then Start**
+
 ```bash
 cd d:\crm-system
 npm run verify
@@ -70,6 +74,7 @@ All methods do the same thing:
 ## 🎯 What You'll See After Starting
 
 ### Terminal 1 (Backend):
+
 ```
 [Server] Listening on port http://localhost:5000
 [Database] Connected to crm_db_v2
@@ -78,6 +83,7 @@ All methods do the same thing:
 ```
 
 ### Terminal 2 (Frontend):
+
 ```
 VITE v5.0.8  ready in XXX ms
 
@@ -86,6 +92,7 @@ VITE v5.0.8  ready in XXX ms
 ```
 
 ### Browser:
+
 - Opens automatically or go to: **http://localhost:5173**
 - See CRM Login page ✅
 - Create account → Login → Dashboard displays! 🎉
@@ -95,26 +102,31 @@ VITE v5.0.8  ready in XXX ms
 ## 🔑 First Time Using the System
 
 ### Step 1: Start Everything
+
 ```bash
 npm run start-all
 # OR double-click START-ALL.bat
 ```
 
 ### Step 2: Open in Browser
+
 - Automatically opens: http://localhost:5173
 - Or manually open it
 
 ### Step 3: Create Account
+
 1. Click **"Sign up"** button
 2. Enter name, email, password
 3. Click **"Register"**
 
 ### Step 4: Login
+
 1. Click **"Sign in"** or Login button
 2. Use your email and password
 3. You're in! 🎊
 
 ### Step 5: Explore
+
 - See Dashboard with statistics
 - Try Leads section (fully functional CRUD)
 - Try other modules (structure ready)
@@ -146,21 +158,22 @@ npm run dev
 
 ## 🗂️ File Locations
 
-| File | Location | Purpose |
-|------|----------|---------|
-| START-ALL.bat | Project root | Double-click to start everything |
-| START-ALL.ps1 | Project root | PowerShell version |
-| start-all.js | Project root | Node.js version |
-| verify-setup.js | Project root | Check if everything is set up |
-| Backend | `server/` | Express.js API server |
-| Frontend | `client/` | React UI application |
-| Database | MySQL (local) | crm_db_v2 database |
+| File            | Location      | Purpose                          |
+| --------------- | ------------- | -------------------------------- |
+| START-ALL.bat   | Project root  | Double-click to start everything |
+| START-ALL.ps1   | Project root  | PowerShell version               |
+| start-all.js    | Project root  | Node.js version                  |
+| verify-setup.js | Project root  | Check if everything is set up    |
+| Backend         | `server/`     | Express.js API server            |
+| Frontend        | `client/`     | React UI application             |
+| Database        | MySQL (local) | crm_db_v2 database               |
 
 ---
 
 ## 🔐 Login Credentials
 
 **Create your own:**
+
 1. Click "Sign up" first time
 2. Create email + password
 3. Login
@@ -173,11 +186,11 @@ npm run dev
 
 After startup:
 
-| Service | URL | Username | Password |
-|---------|-----|----------|----------|
-| **Frontend** | http://localhost:5173 | (use email) | (your password) |
-| **Backend API** | http://localhost:5000/api | (admin required) | N/A |
-| **MySQL** | localhost:3306 | root | Himanshu@2004 |
+| Service         | URL                       | Username         | Password        |
+| --------------- | ------------------------- | ---------------- | --------------- |
+| **Frontend**    | http://localhost:5173     | (use email)      | (your password) |
+| **Backend API** | http://localhost:5000/api | (admin required) | N/A             |
+| **MySQL**       | localhost:3306            | root             | Himanshu@2004   |
 
 ---
 
@@ -190,6 +203,7 @@ npm run verify
 ```
 
 You should see:
+
 ```
 ✅ Backend folder (server/)... Found
 ✅ Frontend folder (client/)... Found
@@ -210,13 +224,16 @@ You should see:
 ## 🛑 How to Stop Everything
 
 ### If Started with Double-Click:
+
 - Close both terminal windows
 
 ### If Started with npm command:
+
 - Press **Ctrl+C** in the terminal
 - Both services will stop
 
 ### If Started with PowerShell:
+
 - Close the PowerShell window OR
 - Press **Ctrl+C**
 
@@ -225,6 +242,7 @@ You should see:
 ## 🐛 Common Issues & Fixes
 
 ### **"Address already in use"**
+
 ```bash
 # Another app is using the port
 # Kill the process:
@@ -235,6 +253,7 @@ npm run start-all
 ```
 
 ### **"npm not found"**
+
 ```bash
 # Install Node.js from:
 # https://nodejs.org/
@@ -243,6 +262,7 @@ npm run start-all
 ```
 
 ### **"MySQL connection refused"**
+
 ```bash
 # MySQL not running
 # Start MySQL via:
@@ -252,6 +272,7 @@ npm run start-all
 ```
 
 ### **"Module not found"**
+
 ```bash
 # Dependencies not installed
 # Run from project root:
@@ -264,6 +285,7 @@ npm run start-all
 ```
 
 ### **"Frontend shows blank page"**
+
 ```bash
 # Open browser console (F12)
 # Check for errors
@@ -286,6 +308,7 @@ npm run start-all
 ## 🚀 Summary
 
 **What you asked for:**
+
 > Make one file where I go `cd client` and command `npm run dev` to run server, database, and frontend
 
 **What we created:**
@@ -296,11 +319,13 @@ npm run start-all
 ✅ All services start automatically with one command
 
 **How to use:**
+
 1. **Double-click** `START-ALL.bat` in project root, OR
 2. **Run** `npm run start-all`, OR
 3. **Run** `.\START-ALL.ps1`
 
 **What happens:**
+
 - Backend starts on port 5000 ✅
 - Frontend starts on port 5173 ✅
 - MySQL database (crm_db_v2) connects ✅
@@ -320,15 +345,17 @@ npm run start-all
 
 ## 🎉 You're All Set!
 
-Everything is now automated and ready to use! 
+Everything is now automated and ready to use!
 
 **Next steps:**
+
 1. Choose your startup method above
 2. Start the system
 3. Create account & login
 4. Explore the CRM! 🚀
 
-**Need help?** 
+**Need help?**
+
 - Check STARTUP-GUIDE.md
 - Check terminal output for error messages
 - Make sure MySQL is running locally

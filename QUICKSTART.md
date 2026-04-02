@@ -326,7 +326,7 @@ curl -X GET http://localhost:5000/api/leads \
 
 ---
 
-## 🚀 You're All Set!
+## 🚀 You're All Set
 
 Everything is ready to:
 
