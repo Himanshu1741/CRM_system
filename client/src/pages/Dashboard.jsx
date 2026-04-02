@@ -39,11 +39,21 @@ export default function Dashboard() {
           notesAPI.getAll(),
         ]);
 
+      console.log("API Responses:", {
+        leads: leadsRes.data,
+        customers: customersRes.data,
+        deals: dealsRes.data,
+        tasks: tasksRes.data,
+        notes: notesRes.data,
+      });
+
       const leads = leadsRes.data.data || [];
       const customers = customersRes.data.data || [];
       const deals = dealsRes.data.data || [];
       const tasks = tasksRes.data.data || [];
       const notes = notesRes.data.data || [];
+
+      console.log("Parsed data:", { leads, customers, deals, tasks, notes });
 
       // Calculate statistics
       const leadStatus = {
@@ -107,6 +117,11 @@ export default function Dashboard() {
       });
     } catch (err) {
       console.error("Failed to fetch stats:", err);
+      console.error("Error details:", {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+      });
     } finally {
       setLoading(false);
     }
@@ -130,7 +145,9 @@ export default function Dashboard() {
   if (!stats) {
     return (
       <Box sx={{ p: 3 }}>
-        <Typography>Failed to load dashboard</Typography>
+        <Typography color="error" variant="h6">
+          Failed to load dashboard. Check browser console for details.
+        </Typography>
       </Box>
     );
   }

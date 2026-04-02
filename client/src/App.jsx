@@ -9,6 +9,8 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import "./index.css";
 import Activities from "./pages/Activities";
+import Clients from "./pages/Clients";
+import Communications from "./pages/Communications";
 import Customers from "./pages/Customers";
 import Dashboard from "./pages/Dashboard";
 import Deals from "./pages/Deals";
@@ -20,6 +22,7 @@ import Notes from "./pages/Notes";
 import Pipeline from "./pages/Pipeline";
 import { RegisterPage } from "./pages/Register";
 import Reports from "./pages/Reports";
+import Staff from "./pages/Staff";
 import Tasks from "./pages/Tasks";
 
 function App() {
