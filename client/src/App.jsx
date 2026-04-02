@@ -44,6 +44,7 @@ function App() {
                     <Route path="/kanban" element={<Kanban />} />
                     <Route path="/pipeline" element={<Pipeline />} />
                     <Route path="/tasks" element={<Tasks />} />
+                    <Route path="/reports" element={<Reports />} />
                     <Route path="/activities" element={<Activities />} />
                     <Route path="/notes" element={<Notes />} />
                   </Routes>

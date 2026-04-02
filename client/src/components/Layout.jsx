@@ -1,11 +1,13 @@
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import CloseIcon from "@mui/icons-material/Close";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import NoteIcon from "@mui/icons-material/Note";
 import PeopleIcon from "@mui/icons-material/People";
 import PersonIcon from "@mui/icons-material/Person";
+import ShowChartIcon from "@mui/icons-material/ShowChart";
 import TaskIcon from "@mui/icons-material/Task";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import ViewWeekIcon from "@mui/icons-material/ViewWeek";
@@ -64,6 +66,7 @@ export function Layout({ children }) {
     { label: "Deals", icon: <AttachMoneyIcon />, path: "/deals" },
     { label: "Kanban", icon: <ViewWeekIcon />, path: "/kanban" },
     { label: "Pipeline", icon: <ShowChartIcon />, path: "/pipeline" },
+    { label: "Reports", icon: <FileDownloadIcon />, path: "/reports" },
     { label: "Tasks", icon: <TaskIcon />, path: "/tasks" },
     { label: "Notes", icon: <NoteIcon />, path: "/notes" },
     { label: "Activities", icon: <TimelineIcon />, path: "/activities" },
