@@ -17,6 +17,7 @@ import Kanban from "./pages/Kanban";
 import Leads from "./pages/Leads";
 import { LoginPage } from "./pages/Login";
 import Notes from "./pages/Notes";
+import Pipeline from "./pages/Pipeline";
 import { RegisterPage } from "./pages/Register";
 import Tasks from "./pages/Tasks";
 
@@ -41,6 +42,7 @@ function App() {
                     <Route path="/customers" element={<Customers />} />
                     <Route path="/deals" element={<Deals />} />
                     <Route path="/kanban" element={<Kanban />} />
+                    <Route path="/pipeline" element={<Pipeline />} />
                     <Route path="/tasks" element={<Tasks />} />
                     <Route path="/activities" element={<Activities />} />
                     <Route path="/notes" element={<Notes />} />
