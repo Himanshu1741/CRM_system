@@ -1,4 +1,27 @@
-import { Box, Button, CircularProgress } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { dealsAPI } from "../services/api";
 
@@ -169,7 +192,7 @@ export default function Deals() {
               deals.map((deal) => (
                 <TableRow key={deal.id} hover>
                   <TableCell>{deal.dealName}</TableCell>
-                  <TableCell>${deal.amount}</TableCell>
+                  <TableCell>₹{deal.amount}</TableCell>
                   <TableCell>{deal.stage}</TableCell>
                   <TableCell>{deal.probability}%</TableCell>
                   <TableCell>{deal.expectedCloseDate}</TableCell>

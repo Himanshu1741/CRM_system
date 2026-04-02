@@ -134,7 +134,14 @@ export default function Activities() {
                       {activity.activityType}
                     </Typography>
                   </TableCell>
-                  <TableCell sx={{ maxWidth: 300, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <TableCell
+                    sx={{
+                      maxWidth: 300,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     {activity.description}
                   </TableCell>
                   <TableCell>{activity.relatedTo || "-"}</TableCell>
