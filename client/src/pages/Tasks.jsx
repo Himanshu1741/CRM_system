@@ -25,7 +25,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import AdvancedFilterPanel from "../components/AdvancedFilterPanel";
+import { AdvancedFilterPanel } from "../components/AdvancedFilterPanel";
 import { tasksAPI } from "../services/api";
 
 export default function Tasks() {
