@@ -8,6 +8,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import PersonIcon from "@mui/icons-material/Person";
 import TaskIcon from "@mui/icons-material/Task";
 import TimelineIcon from "@mui/icons-material/Timeline";
+import ViewWeekIcon from "@mui/icons-material/ViewWeek";
 import {
     AppBar,
     Avatar,
@@ -61,6 +62,7 @@ export function Layout({ children }) {
     { label: "Leads", icon: <PeopleIcon />, path: "/leads" },
     { label: "Customers", icon: <PersonIcon />, path: "/customers" },
     { label: "Deals", icon: <AttachMoneyIcon />, path: "/deals" },
+    { label: "Kanban", icon: <ViewWeekIcon />, path: "/kanban" },
     { label: "Tasks", icon: <TaskIcon />, path: "/tasks" },
     { label: "Notes", icon: <NoteIcon />, path: "/notes" },
     { label: "Activities", icon: <TimelineIcon />, path: "/activities" },

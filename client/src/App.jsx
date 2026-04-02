@@ -13,6 +13,7 @@ import Customers from "./pages/Customers";
 import Dashboard from "./pages/Dashboard";
 import Deals from "./pages/Deals";
 import DebugLogin from "./pages/DebugLogin";
+import Kanban from "./pages/Kanban";
 import Leads from "./pages/Leads";
 import { LoginPage } from "./pages/Login";
 import Notes from "./pages/Notes";
@@ -39,6 +40,7 @@ function App() {
                     <Route path="/leads" element={<Leads />} />
                     <Route path="/customers" element={<Customers />} />
                     <Route path="/deals" element={<Deals />} />
+                    <Route path="/kanban" element={<Kanban />} />
                     <Route path="/tasks" element={<Tasks />} />
                     <Route path="/activities" element={<Activities />} />
                     <Route path="/notes" element={<Notes />} />
