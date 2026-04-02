@@ -32,7 +32,7 @@ const Activity = sequelize.define(
     createdBy: {
       type: DataTypes.INTEGER,
       field: "created_by",
-      allowNull: false,
+      allowNull: true,
     },
   },
   {

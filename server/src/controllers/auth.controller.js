@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { handleError, handleSuccess } from "../utils/errorHandler.js";
@@ -39,12 +38,10 @@ export const register = async (req, res) => {
 
     // Validate password strength
     if (!validatePassword(password)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Password must be at least 6 characters",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters",
+      });
     }
 
     let user = await User.findOne({ where: { email } });
@@ -58,13 +55,11 @@ export const register = async (req, res) => {
     const [firstName, ...lastNameParts] = name.split(" ");
     const lastName = lastNameParts.join(" ") || "";
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     user = await User.create({
       firstName,
       lastName,
       email,
-      password: hashedPassword,
+      password, // Don't hash here, let the beforeCreate hook handle it
       role: "user",
     });
 
