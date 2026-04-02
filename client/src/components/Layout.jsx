@@ -7,6 +7,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import NoteIcon from "@mui/icons-material/Note";
 import PeopleIcon from "@mui/icons-material/People";
 import PersonIcon from "@mui/icons-material/Person";
+import PhoneIcon from "@mui/icons-material/Phone";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import TaskIcon from "@mui/icons-material/Task";
 import TimelineIcon from "@mui/icons-material/Timeline";
@@ -63,6 +64,9 @@ export function Layout({ children }) {
     { label: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
     { label: "Leads", icon: <PeopleIcon />, path: "/leads" },
     { label: "Customers", icon: <PersonIcon />, path: "/customers" },
+    { label: "Clients", icon: <PeopleIcon />, path: "/clients" },
+    { label: "Staff", icon: <PersonIcon />, path: "/staff" },
+    { label: "Communications", icon: <PhoneIcon />, path: "/communications" },
     { label: "Deals", icon: <AttachMoneyIcon />, path: "/deals" },
     { label: "Kanban", icon: <ViewWeekIcon />, path: "/kanban" },
     { label: "Pipeline", icon: <ShowChartIcon />, path: "/pipeline" },

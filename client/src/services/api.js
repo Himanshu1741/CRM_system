@@ -93,4 +93,31 @@ export const activitiesAPI = {
   delete: (id) => api.delete(`/activities/${id}`),
 };
 
+// Clients APIs
+export const clientsAPI = {
+  getAll: () => api.get("/clients"),
+  getById: (id) => api.get(`/clients/${id}`),
+  create: (data) => api.post("/clients", data),
+  update: (id, data) => api.put(`/clients/${id}`, data),
+  delete: (id) => api.delete(`/clients/${id}`),
+};
+
+// Staff APIs
+export const staffAPI = {
+  getAll: () => api.get("/staff"),
+  getById: (id) => api.get(`/staff/${id}`),
+  create: (data) => api.post("/staff", data),
+  update: (id, data) => api.put(`/staff/${id}`, data),
+  delete: (id) => api.delete(`/staff/${id}`),
+};
+
+// Communications APIs
+export const communicationsAPI = {
+  getAll: (filters = {}) => api.get("/communications", { params: filters }),
+  getById: (id) => api.get(`/communications/${id}`),
+  create: (data) => api.post("/communications", data),
+  update: (id, data) => api.put(`/communications/${id}`, data),
+  delete: (id) => api.delete(`/communications/${id}`),
+};
+
 export default api;

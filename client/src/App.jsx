@@ -44,6 +44,12 @@ function App() {
                     <Route path="/deals" element={<Deals />} />
                     <Route path="/kanban" element={<Kanban />} />
                     <Route path="/pipeline" element={<Pipeline />} />
+                    <Route path="/clients" element={<Clients />} />
+                    <Route path="/staff" element={<Staff />} />
+                    <Route
+                      path="/communications"
+                      element={<Communications />}
+                    />
                     <Route path="/tasks" element={<Tasks />} />
                     <Route path="/reports" element={<Reports />} />
                     <Route path="/activities" element={<Activities />} />

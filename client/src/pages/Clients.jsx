@@ -24,69 +24,74 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { AdvancedFilterPanel } from "../components/AdvancedFilterPanel";
-import { dealsAPI } from "../services/api";
+import { clientsAPI } from "../services/api";
 
-export default function Deals() {
-  const [deals, setDeals] = useState([]);
-  const [allDeals, setAllDeals] = useState([]);
+export default function Clients() {
+  const [clients, setClients] = useState([]);
+  const [allClients, setAllClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [filters, setFilters] = useState({});
   const [formData, setFormData] = useState({
-    title: "",
-    amount: "",
-    stage: "prospecting",
-    probability: "0",
-    expectedCloseDate: "",
-    customerId: "",
-    description: "",
+    name: "",
+    email: "",
+    phone: "",
+    whatsapp: "",
+    company: "",
+    industry: "",
+    status: "prospect",
+    notes: "",
   });
 
   const filterFields = [
     {
-      name: "title",
-      label: "Deal Name",
+      name: "name",
+      label: "Name",
       type: "text",
-      placeholder: "Search by deal name...",
+      placeholder: "Search by name...",
     },
     {
-      name: "stage",
-      label: "Stage",
+      name: "email",
+      label: "Email",
+      type: "text",
+      placeholder: "Search by email...",
+    },
+    {
+      name: "company",
+      label: "Company",
+      type: "text",
+      placeholder: "Search by company...",
+    },
+    {
+      name: "status",
+      label: "Status",
       type: "select",
       options: [
-        { value: "prospecting", label: "Prospecting" },
-        { value: "negotiation", label: "Negotiation" },
-        { value: "proposal", label: "Proposal" },
-        { value: "won", label: "Won" },
-        { value: "lost", label: "Lost" },
+        { value: "prospect", label: "Prospect" },
+        { value: "active", label: "Active" },
+        { value: "inactive", label: "Inactive" },
       ],
-    },
-    {
-      name: "customerId",
-      label: "Customer ID",
-      type: "text",
-      placeholder: "Search by customer ID...",
     },
   ];
 
   useEffect(() => {
-    fetchDeals();
+    fetchClients();
   }, []);
 
   useEffect(() => {
     applyFilters();
-  }, [filters, allDeals]);
+  }, [filters, allClients]);
 
-  const fetchDeals = async () => {
+  const fetchClients = async () => {
     try {
       setLoading(true);
-      const response = await dealsAPI.getAll();
-      setAllDeals(response.data.data || []);
+      const response = await clientsAPI.getAll();
+      setAllClients(response.data.data || []);
       setError("");
     } catch (err) {
-      setError("Failed to fetch deals");
+      setError("Failed to fetch clients");
       console.error(err);
     } finally {
       setLoading(false);
@@ -94,47 +99,49 @@ export default function Deals() {
   };
 
   const applyFilters = () => {
-    let filtered = [...allDeals];
+    let filtered = [...allClients];
 
     Object.keys(filters).forEach((key) => {
       const filterValue = filters[key];
       if (filterValue && filterValue.trim() !== "") {
-        filtered = filtered.filter((deal) => {
-          const fieldValue = String(deal[key] || "").toLowerCase();
+        filtered = filtered.filter((client) => {
+          const fieldValue = String(client[key] || "").toLowerCase();
           return fieldValue.includes(filterValue.toLowerCase());
         });
       }
     });
 
-    setDeals(filtered);
+    setClients(filtered);
   };
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
   };
 
-  const handleOpenDialog = (deal = null) => {
-    if (deal) {
-      setEditingId(deal.id);
+  const handleOpenDialog = (client = null) => {
+    if (client) {
+      setEditingId(client.id);
       setFormData({
-        title: deal.title || "",
-        amount: deal.amount || "",
-        stage: deal.stage || "prospecting",
-        probability: deal.probability || "0",
-        expectedCloseDate: deal.expectedCloseDate || "",
-        customerId: deal.customerId || "",
-        description: deal.description || "",
+        name: client.name || "",
+        email: client.email || "",
+        phone: client.phone || "",
+        whatsapp: client.whatsapp || "",
+        company: client.company || "",
+        industry: client.industry || "",
+        status: client.status || "prospect",
+        notes: client.notes || "",
       });
     } else {
       setEditingId(null);
       setFormData({
-        title: "",
-        amount: "",
-        stage: "prospecting",
-        probability: "0",
-        expectedCloseDate: "",
-        customerId: "",
-        description: "",
+        name: "",
+        email: "",
+        phone: "",
+        whatsapp: "",
+        company: "",
+        industry: "",
+        status: "prospect",
+        notes: "",
       });
     }
     setOpenDialog(true);
@@ -151,60 +158,36 @@ export default function Deals() {
   };
 
   const handleSave = async () => {
-    if (!formData.title || !formData.amount || !formData.customerId) {
-      setError(
-        "Please fill in all required fields (Deal Name, Amount, Customer)",
-      );
+    if (!formData.name || !formData.email || !formData.phone) {
+      setError("Please fill in all required fields");
       return;
     }
 
     try {
-      const customerId = parseInt(formData.customerId);
-      const amount = parseFloat(formData.amount);
-      const probability = parseInt(formData.probability);
-
-      // Validate parsed values
-      if (isNaN(customerId) || isNaN(amount) || isNaN(probability)) {
-        setError("Invalid numeric values. Please check your input.");
-        return;
-      }
-
-      if (amount <= 0) {
-        setError("Amount must be greater than 0");
-        return;
-      }
-
-      const dataToSend = {
-        ...formData,
-        customerId,
-        amount,
-        probability,
-      };
-
       if (editingId) {
-        await dealsAPI.update(editingId, dataToSend);
+        await clientsAPI.update(editingId, formData);
       } else {
-        await dealsAPI.create(dataToSend);
+        await clientsAPI.create(formData);
       }
-      await fetchDeals();
+      await fetchClients();
       handleCloseDialog();
       setError("");
     } catch (err) {
       const errorMsg =
-        err.response?.data?.message || err.message || "Failed to save deal";
+        err.response?.data?.message || err.message || "Failed to save client";
       setError(errorMsg);
       console.error("Save error:", err);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this deal?")) {
+    if (window.confirm("Are you sure you want to delete this client?")) {
       try {
-        await dealsAPI.delete(id);
-        await fetchDeals();
+        await clientsAPI.delete(id);
+        await fetchClients();
         setError("");
       } catch (err) {
-        setError("Failed to delete deal");
+        setError("Failed to delete client");
         console.error(err);
       }
     }
@@ -236,14 +219,14 @@ export default function Deals() {
         }}
       >
         <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-          Deals
+          Clients
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpenDialog()}
         >
-          Add Deal
+          Add Client
         </Button>
       </Box>
 
@@ -264,30 +247,57 @@ export default function Deals() {
         <Table>
           <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
             <TableRow>
-              <TableCell sx={{ fontWeight: "bold" }}>Deal Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Amount</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Stage</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Probability</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Close Date</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Phone</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>WhatsApp</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Company</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
               <TableCell sx={{ fontWeight: "bold" }} align="right">
                 Actions
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {deals && deals.length > 0 ? (
-              deals.map((deal) => (
-                <TableRow key={deal.id} hover>
-                  <TableCell>{deal.title}</TableCell>
-                  <TableCell>₹{deal.amount}</TableCell>
-                  <TableCell>{deal.stage}</TableCell>
-                  <TableCell>{deal.probability}%</TableCell>
-                  <TableCell>{deal.expectedCloseDate}</TableCell>
+            {clients && clients.length > 0 ? (
+              clients.map((client) => (
+                <TableRow key={client.id} hover>
+                  <TableCell>{client.name}</TableCell>
+                  <TableCell>{client.email}</TableCell>
+                  <TableCell>{client.phone}</TableCell>
+                  <TableCell>{client.whatsapp || "-"}</TableCell>
+                  <TableCell>{client.company || "-"}</TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        display: "inline-block",
+                        px: 2,
+                        py: 0.5,
+                        borderRadius: 1,
+                        bgcolor:
+                          client.status === "active"
+                            ? "success.light"
+                            : client.status === "prospect"
+                              ? "info.light"
+                              : "warning.light",
+                        color:
+                          client.status === "active"
+                            ? "success.dark"
+                            : client.status === "prospect"
+                              ? "info.dark"
+                              : "warning.dark",
+                        fontSize: "0.75rem",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {client.status}
+                    </Box>
+                  </TableCell>
                   <TableCell align="right">
                     <Tooltip title="Edit">
                       <IconButton
                         size="small"
-                        onClick={() => handleOpenDialog(deal)}
+                        onClick={() => handleOpenDialog(client)}
                       >
                         <EditIcon fontSize="small" />
                       </IconButton>
@@ -295,7 +305,7 @@ export default function Deals() {
                     <Tooltip title="Delete">
                       <IconButton
                         size="small"
-                        onClick={() => handleDelete(deal.id)}
+                        onClick={() => handleDelete(client.id)}
                         color="error"
                       >
                         <DeleteIcon fontSize="small" />
@@ -306,8 +316,8 @@ export default function Deals() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
-                  No deals yet. Create your first deal!
+                <TableCell colSpan={7} align="center" sx={{ py: 3 }}>
+                  No clients yet. Create your first client!
                 </TableCell>
               </TableRow>
             )}
@@ -321,73 +331,75 @@ export default function Deals() {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>{editingId ? "Edit Deal" : "Add New Deal"}</DialogTitle>
+        <DialogTitle>
+          {editingId ? "Edit Client" : "Add New Client"}
+        </DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}
         >
           <TextField
-            label="Deal Name"
-            name="title"
-            value={formData.title}
+            label="Name"
+            name="name"
+            value={formData.name}
             onChange={handleInputChange}
             fullWidth
             required
           />
           <TextField
-            label="Customer ID"
-            name="customerId"
-            type="number"
-            value={formData.customerId}
+            label="Email"
+            name="email"
+            type="email"
+            value={formData.email}
             onChange={handleInputChange}
             fullWidth
             required
           />
           <TextField
-            label="Amount"
-            name="amount"
-            type="number"
-            value={formData.amount}
+            label="Phone"
+            name="phone"
+            value={formData.phone}
             onChange={handleInputChange}
             fullWidth
             required
           />
           <TextField
-            label="Stage"
-            name="stage"
-            value={formData.stage}
+            label="WhatsApp"
+            name="whatsapp"
+            value={formData.whatsapp}
+            onChange={handleInputChange}
+            fullWidth
+          />
+          <TextField
+            label="Company"
+            name="company"
+            value={formData.company}
+            onChange={handleInputChange}
+            fullWidth
+          />
+          <TextField
+            label="Industry"
+            name="industry"
+            value={formData.industry}
+            onChange={handleInputChange}
+            fullWidth
+          />
+          <TextField
+            label="Status"
+            name="status"
+            value={formData.status}
             onChange={handleInputChange}
             fullWidth
             select
             SelectProps={{ native: true }}
           >
-            <option value="prospecting">Prospecting</option>
-            <option value="negotiation">Negotiation</option>
-            <option value="proposal">Proposal</option>
-            <option value="won">Won</option>
-            <option value="lost">Lost</option>
+            <option value="prospect">Prospect</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
           </TextField>
           <TextField
-            label="Probability (%)"
-            name="probability"
-            type="number"
-            inputProps={{ min: 0, max: 100 }}
-            value={formData.probability}
-            onChange={handleInputChange}
-            fullWidth
-          />
-          <TextField
-            label="Expected Close Date"
-            name="expectedCloseDate"
-            type="date"
-            value={formData.expectedCloseDate}
-            onChange={handleInputChange}
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-          />
-          <TextField
-            label="Description"
-            name="description"
-            value={formData.description}
+            label="Notes"
+            name="notes"
+            value={formData.notes}
             onChange={handleInputChange}
             fullWidth
             multiline
