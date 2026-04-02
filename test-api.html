@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <title>CRM API Test</title>
+  </head>
+  <body>
+    <h1>Testing CRM API Connection</h1>
+    <div id="result"></div>
+
+    <script>
+      async function test() {
+        const resultDiv = document.getElementById("result");
+
+        try {
+          resultDiv.innerHTML += "🔍 Testing backend connection...<br>";
+
+          // Test 1: Check if backend responds
+          const healthResponse = await fetch("http://localhost:5000/");
+          const healthText = await healthResponse.text();
+          resultDiv.innerHTML += `✅ Backend health: ${healthText}<br><br>`;
+
+          // Test 2: Test login endpoint
+          resultDiv.innerHTML += "🔐 Testing login endpoint...<br>";
+          const loginResponse = await fetch(
+            "http://localhost:5000/api/auth/login",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: "himanshuagrawal257@gmail.com",
+                password: "Himanshu@2004",
+              }),
+            },
+          );
+
+          const loginData = await loginResponse.json();
+          resultDiv.innerHTML += `Status: ${loginResponse.status}<br>`;
+          resultDiv.innerHTML += `<pre>${JSON.stringify(loginData, null, 2)}</pre>`;
+
+          if (loginData.success) {
+            resultDiv.innerHTML += "✅ LOGIN SUCCESSFUL!";
+          } else {
+            resultDiv.innerHTML += `❌ Login failed: ${loginData.message}`;
+          }
+        } catch (error) {
+          resultDiv.innerHTML += `❌ Error: ${error.message}`;
+        }
+      }
+
+      test();
+    </script>
+
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+      }
+      pre {
+        background: #f0f0f0;
+        padding: 10px;
+        overflow-x: auto;
+      }
+    </style>
+  </body>
+</html>

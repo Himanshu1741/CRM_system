@@ -12,6 +12,7 @@ import Activities from "./pages/Activities";
 import Customers from "./pages/Customers";
 import Dashboard from "./pages/Dashboard";
 import Deals from "./pages/Deals";
+import DebugLogin from "./pages/DebugLogin";
 import Leads from "./pages/Leads";
 import { LoginPage } from "./pages/Login";
 import Notes from "./pages/Notes";
@@ -25,6 +26,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/debug" element={<DebugLogin />} />
 
           <Route
             path="/*"

@@ -3,6 +3,7 @@
 ## ✅ Verified: Backend Login Works!
 
 The backend login has been tested and works perfectly:
+
 ```
 ✅ User exists: himanshuagrawal257@gmail.com
 ✅ Password verified: Himanshu@2004
@@ -15,11 +16,13 @@ The backend login has been tested and works perfectly:
 ## 🚀 FOLLOW THESE STEPS EXACTLY
 
 ### **STEP 1: Close Everything**
+
 - Close all terminals
 - Close all VS Code windows
 - Close browser
 
 ### **STEP 2: Delete Node Modules (Fresh Start)**
+
 ```bash
 cd d:\crm-system
 
@@ -32,6 +35,7 @@ npm cache clean --force
 ```
 
 ### **STEP 3: Reinstall Everything**
+
 ```bash
 # From d:\crm-system directory
 
@@ -47,12 +51,14 @@ npm install --prefix client
 **Don't skip this - you NEED two terminals running simultaneously**
 
 ### **TERMINAL 1: Start Backend**
+
 ```bash
 cd d:\crm-system\server
 npm start
 ```
 
 **Wait until you see:**
+
 ```
 Database crm_db_v2 ready
 Database connected
@@ -65,12 +71,14 @@ Server running on port 5000
 **✅ DO NOT CLOSE THIS TERMINAL**
 
 ### **TERMINAL 2: Start Frontend** (Open NEW terminal)
+
 ```bash
 cd d:\crm-system\client
 npm run dev
 ```
 
 **Wait until you see:**
+
 ```
 VITE v5.4.21 ready in XXX ms
 Local: http://localhost:5173/
@@ -79,11 +87,14 @@ Local: http://localhost:5173/
 **✅ DO NOT CLOSE THIS TERMINAL**
 
 ### **STEP 5: Open Browser**
+
 - Go to: `http://localhost:5173`
 - You should see **CRM Login Page** ✅
 
 ### **STEP 6: Login**
+
 Exactly as shown:
+
 ```
 📧 Email:    himanshuagrawal257@gmail.com
 🔑 Password: Himanshu@2004
@@ -95,6 +106,7 @@ Click:       Login
 ## ✅ Expected Behavior
 
 ### **Backend Terminal (TERMINAL 1) Should Show:**
+
 ```
 Database crm_db_v2 ready
 Database connected
@@ -107,12 +119,14 @@ POST /api/auth/login 200 (or 201)
 ```
 
 ### **Frontend Terminal (TERMINAL 2) Should Show:**
+
 ```
 VITE Local: http://localhost:5173/
 (no errors when you type or submit)
 ```
 
 ### **Browser Should Show:**
+
 ```
 1. You see CRM Login form ✅
 2. You enter email and password ✅
@@ -126,16 +140,21 @@ VITE Local: http://localhost:5173/
 ## 🐛 If Still Failing - Diagnostic Checklist
 
 ### **Check 1: Backend Running?**
+
 Look at TERMINAL 1:
+
 - ✅ See "Server running on port 5000"? → Good!
 - ❌ See error? → Copy error and share with me
 
 ### **Check 2: Frontend Opened Correctly?**
+
 Look at TERMINAL 2:
+
 - ✅ See "Local: http://localhost:5173/"? → Good!
 - ❌ See error? → Copy error and share with me
 
 ### **Check 3: Browser Console for Errors**
+
 ```
 In browser:
 1. Press F12 (Developer Tools)
@@ -145,6 +164,7 @@ In browser:
 ```
 
 ### **Check 4: Backend API Responding?**
+
 ```
 Try this URL in browser:
 http://localhost:5000/api
@@ -154,6 +174,7 @@ If you get error, backend isn't running properly
 ```
 
 ### **Check 5: Make Sure You're Using Correct URL**
+
 - ✅ CORRECT: http://localhost:5173
 - ❌ WRONG: http://localhost:3000
 - ❌ WRONG: http://localhost:5000
@@ -163,14 +184,14 @@ If you get error, backend isn't running properly
 
 ## 📋 File Locations for Reference
 
-| What | Where |
-|------|-------|
-| Backend | `d:\crm-system\server` |
-| Frontend | `d:\crm-system\client` |
-| Configuration | `d:\crm-system\server\.env` |
-| Database | MySQL crm_db_v2 |
+| What           | Where                                  |
+| -------------- | -------------------------------------- |
+| Backend        | `d:\crm-system\server`                 |
+| Frontend       | `d:\crm-system\client`                 |
+| Configuration  | `d:\crm-system\server\.env`            |
+| Database       | MySQL crm_db_v2                        |
 | Login endpoint | `http://localhost:5000/api/auth/login` |
-| Frontend app | `http://localhost:5173` |
+| Frontend app   | `http://localhost:5173`                |
 
 ---
 
@@ -188,6 +209,7 @@ If you get error, backend isn't running properly
 ## 🎯 If Everything Works
 
 You should see:
+
 1. ✅ Login page loads
 2. ✅ Can type email
 3. ✅ Can type password
@@ -201,6 +223,7 @@ You should see:
 ## 💻 Alternative: One Command Start
 
 Instead of two terminals, try:
+
 ```bash
 cd d:\crm-system
 npm run start-all
@@ -213,8 +236,9 @@ This opens both in separate windows automatically.
 ## 🆘 Still Not Working?
 
 Share with me:
+
 1. **Screenshot of TERMINAL 1** (backend console errors)
-2. **Screenshot of TERMINAL 2** (frontend console)  
+2. **Screenshot of TERMINAL 2** (frontend console)
 3. **Screenshot of browser** (what you see)
 4. **Browser console errors** (F12 → Console tab)
 
