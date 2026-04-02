@@ -23,9 +23,10 @@ async function initializeDatabase() {
     await connection.end();
     console.log(`Database ${DB_NAME} ready`);
 
-    // Now sync with the database - use force: false to preserve existing data
-    await sequelize.sync({ force: false });
-    console.log("Database connected");
+    // Sync with CASCADE delete constraints
+    // Using force: true to recreate tables with proper foreign key constraints
+    await sequelize.sync({ force: true });
+    console.log("Database synced with CASCADE delete constraints");
 
     // Seed default user
     await seedDefaultUser();
