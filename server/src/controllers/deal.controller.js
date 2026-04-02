@@ -171,6 +171,11 @@ export const deleteDeal = async (req, res) => {
         .json({ success: false, message: "Deal not found" });
     }
 
+    // Delete related records first (cascade delete workaround)
+    await Note.destroy({ where: { dealId: id } });
+    await Activity.destroy({ where: { dealId: id } });
+
+    // Now delete the deal
     await deal.destroy();
 
     handleSuccess(res, { id }, "Deal deleted successfully");

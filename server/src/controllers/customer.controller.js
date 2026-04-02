@@ -1,4 +1,7 @@
+import Activity from "../models/Activity.js";
 import Customer from "../models/Customer.js";
+import Deal from "../models/Deal.js";
+import Note from "../models/Note.js";
 import { handleError, handleSuccess } from "../utils/errorHandler.js";
 import { validateEmail, validateRequired } from "../utils/validation.js";
 
@@ -145,6 +148,12 @@ export const deleteCustomer = async (req, res) => {
         .json({ success: false, message: "Customer not found" });
     }
 
+    // Delete related records first (cascade delete workaround)
+    await Deal.destroy({ where: { customerId: id } });
+    await Note.destroy({ where: { customerId: id } });
+    await Activity.destroy({ where: { customerId: id } });
+
+    // Now delete the customer
     await customer.destroy();
 
     handleSuccess(res, { id }, "Customer deleted successfully");

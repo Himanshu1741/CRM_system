@@ -10,7 +10,16 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: "mysql",
+    logging: false,
+    define: {
+      freezeTableName: true,
+    },
   },
 );
+
+// Enable foreign key constraints in MySQL
+sequelize.authenticate().then(() => {
+  sequelize.query("SET FOREIGN_KEY_CHECKS = 1").catch(console.error);
+});
 
 export default sequelize;

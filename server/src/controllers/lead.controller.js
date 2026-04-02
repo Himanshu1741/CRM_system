@@ -1,4 +1,6 @@
+import Activity from "../models/Activity.js";
 import Lead from "../models/Lead.js";
+import Note from "../models/Note.js";
 import { handleError, handleSuccess } from "../utils/errorHandler.js";
 import { validateEmail, validateRequired } from "../utils/validation.js";
 
@@ -135,6 +137,11 @@ export const deleteLead = async (req, res) => {
         .json({ success: false, message: "Lead not found" });
     }
 
+    // Delete related records first (cascade delete workaround)
+    await Note.destroy({ where: { leadId: id } });
+    await Activity.destroy({ where: { leadId: id } });
+
+    // Now delete the lead
     await lead.destroy();
 
     handleSuccess(res, { id }, "Lead deleted successfully");
