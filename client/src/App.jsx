@@ -19,6 +19,7 @@ import { LoginPage } from "./pages/Login";
 import Notes from "./pages/Notes";
 import Pipeline from "./pages/Pipeline";
 import { RegisterPage } from "./pages/Register";
+import Reports from "./pages/Reports";
 import Tasks from "./pages/Tasks";
 
 function App() {
