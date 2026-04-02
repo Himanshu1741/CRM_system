@@ -1,53 +1,169 @@
-import { useState } from "react";
-import { Button } from "../components/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { activitiesAPI } from "../services/api";
 
 export default function Activities() {
   const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const getActivityTypeColor = (type) => {
-    const colors = {
-      call: "bg-blue-100 text-blue-800",
-      email: "bg-purple-100 text-purple-800",
-      meeting: "bg-green-100 text-green-800",
-      note: "bg-yellow-100 text-yellow-800",
-      task: "bg-orange-100 text-orange-800",
-      "status-change": "bg-red-100 text-red-800",
-    };
-    return colors[type] || "bg-gray-100";
+  useEffect(() => {
+    fetchActivities();
+  }, []);
+
+  const fetchActivities = async () => {
+    try {
+      setLoading(true);
+      const response = await activitiesAPI.getAll();
+      setActivities(response.data.data || []);
+      setError("");
+    } catch (err) {
+      setError("Failed to fetch activities");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Activities</h1>
-        <Button variant="primary">Log Activity</Button>
-      </div>
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this activity?")) {
+      try {
+        await activitiesAPI.delete(id);
+        await fetchActivities();
+        setError("");
+      } catch (err) {
+        setError("Failed to delete activity");
+        console.error(err);
+      }
+    }
+  };
 
-      <div className="space-y-4">
-        {activities.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-            No activities yet
-          </div>
-        ) : (
-          activities.map((activity) => (
-            <div key={activity.id} className="bg-white rounded-lg shadow p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <div className="mb-2">
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${getActivityTypeColor(activity.type)}`}
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ p: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+          Activities
+        </Typography>
+      </Box>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError("")}>
+          {error}
+        </Alert>
+      )}
+
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
+            <TableRow>
+              <TableCell sx={{ fontWeight: "bold" }}>Activity Type</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Description</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Related To</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Activity Date</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }} align="right">
+                Actions
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {activities && activities.length > 0 ? (
+              activities.map((activity) => (
+                <TableRow key={activity.id} hover>
+                  <TableCell>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        backgroundColor:
+                          activity.activityType === "call"
+                            ? "#e3f2fd"
+                            : activity.activityType === "email"
+                              ? "#f3e5f5"
+                              : activity.activityType === "meeting"
+                                ? "#e8f5e9"
+                                : "#fff8e1",
+                        color:
+                          activity.activityType === "call"
+                            ? "#1976d2"
+                            : activity.activityType === "email"
+                              ? "#7b1fa2"
+                              : activity.activityType === "meeting"
+                                ? "#2e7d32"
+                                : "#f57f17",
+                        p: 0.5,
+                        borderRadius: 1,
+                        display: "inline-block",
+                      }}
                     >
-                      {activity.type}
-                    </span>
-                  </div>
-                  <p className="text-gray-700">{activity.description}</p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Created by {activity.createdBy} on {activity.createdAt}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))
+                      {activity.activityType}
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 300, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {activity.description}
+                  </TableCell>
+                  <TableCell>{activity.relatedTo || "-"}</TableCell>
+                  <TableCell>{activity.activityDate}</TableCell>
+                  <TableCell align="right">
+                    <Tooltip title="Delete">
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDelete(activity.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  No activities found
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
+}
         )}
       </div>
     </div>

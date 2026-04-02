@@ -1,33 +1,310 @@
-import { useState } from "react";
-import { Button } from "../components/Button";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  MenuItem,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { notesAPI } from "../services/api";
 
 export default function Notes() {
   const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+    type: "task",
+    linkedId: "",
+  });
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  const fetchNotes = async () => {
+    try {
+      setLoading(true);
+      const response = await notesAPI.getAll();
+      setNotes(response.data.data || []);
+      setError("");
+    } catch (err) {
+      setError("Failed to fetch notes");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOpenDialog = (note = null) => {
+    if (note) {
+      setEditingId(note.id);
+      setFormData({
+        title: note.title || "",
+        content: note.content || "",
+        type: note.type || "task",
+        linkedId: note.linkedId || "",
+      });
+    } else {
+      setEditingId(null);
+      setFormData({
+        title: "",
+        content: "",
+        type: "task",
+        linkedId: "",
+      });
+    }
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setEditingId(null);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = async () => {
+    if (!formData.title || !formData.content) {
+      setError("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      if (editingId) {
+        await notesAPI.update(editingId, formData);
+      } else {
+        await notesAPI.create(formData);
+      }
+      await fetchNotes();
+      handleCloseDialog();
+      setError("");
+    } catch (err) {
+      setError("Failed to save note");
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this note?")) {
+      try {
+        await notesAPI.delete(id);
+        await fetchNotes();
+        setError("");
+      } catch (err) {
+        setError("Failed to delete note");
+        console.error(err);
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Notes</h1>
-        <Button variant="primary">Add Note</Button>
-      </div>
+    <Box sx={{ p: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+          Notes
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => handleOpenDialog()}
+        >
+          Add Note
+        </Button>
+      </Box>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {notes.length === 0 ? (
-          <div className="col-span-full bg-white rounded-lg shadow p-8 text-center text-gray-500">
-            No notes yet
-          </div>
-        ) : (
-          notes.map((note) => (
-            <div key={note.id} className="bg-white rounded-lg shadow p-4">
-              <h3 className="font-semibold text-lg mb-2">{note.title}</h3>
-              <p className="text-gray-700 mb-4">{note.content}</p>
-              <p className="text-xs text-gray-500">
-                by {note.createdBy} on {note.createdAt}
-              </p>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError("")}>
+          {error}
+        </Alert>
+      )}
+
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
+            <TableRow>
+              <TableCell sx={{ fontWeight: "bold" }}>Title</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Content</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Type</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Linked ID</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }} align="right">
+                Actions
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {notes && notes.length > 0 ? (
+              notes.map((note) => (
+                <TableRow key={note.id} hover>
+                  <TableCell>{note.title}</TableCell>
+                  <TableCell
+                    sx={{
+                      maxWidth: 300,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {note.content}
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        backgroundColor: "#e3f2fd",
+                        color: "#1976d2",
+                        p: 0.5,
+                        borderRadius: 1,
+                        display: "inline-block",
+                      }}
+                    >
+                      {note.type}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{note.linkedId || "-"}</TableCell>
+                  <TableCell align="right">
+                    <Tooltip title="Edit">
+                      <IconButton
+                        size="small"
+                        onClick={() => handleOpenDialog(note)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDelete(note.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  No notes found
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {/* Dialog for Add/Edit Note */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>{editingId ? "Edit Note" : "Add New Note"}</DialogTitle>
+        <DialogContent sx={{ pt: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Title"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Content"
+                name="content"
+                value={formData.content}
+                onChange={handleInputChange}
+                multiline
+                rows={4}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                select
+                label="Type"
+                name="type"
+                value={formData.type}
+                onChange={handleInputChange}
+              >
+                <MenuItem value="task">Task</MenuItem>
+                <MenuItem value="customer">Customer</MenuItem>
+                <MenuItem value="lead">Lead</MenuItem>
+                <MenuItem value="deal">Deal</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Linked ID"
+                name="linkedId"
+                value={formData.linkedId}
+                onChange={handleInputChange}
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleSave} variant="contained">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 }
