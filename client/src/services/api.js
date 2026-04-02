@@ -1,145 +1,95 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+import axios from "axios";
 
-export const api = {
-  // Leads
-  getLeads: () => fetch(`${API_BASE}/leads`).then((r) => r.json()),
-  getLead: (id) => fetch(`${API_BASE}/leads/${id}`).then((r) => r.json()),
-  createLead: (data) =>
-    fetch(`${API_BASE}/leads`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).then((r) => r.json()),
-  updateLead: (id, data) =>
-    fetch(`${API_BASE}/leads/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).then((r) => r.json()),
-  deleteLead: (id) =>
-    fetch(`${API_BASE}/leads/${id}`, { method: "DELETE" }).then((r) =>
-      r.json(),
-    ),
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-  // Customers
-  getCustomers: () => fetch(`${API_BASE}/customers`).then((r) => r.json()),
-  getCustomer: (id) =>
-    fetch(`${API_BASE}/customers/${id}`).then((r) => r.json()),
-  createCustomer: (data) =>
-    fetch(`${API_BASE}/customers`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).then((r) => r.json()),
-  updateCustomer: (id, data) =>
-    fetch(`${API_BASE}/customers/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).then((r) => r.json()),
-  deleteCustomer: (id) =>
-    fetch(`${API_BASE}/customers/${id}`, { method: "DELETE" }).then((r) =>
-      r.json(),
-    ),
-
-  // Deals
-  getDeals: () => fetch(`${API_BASE}/deals`).then((r) => r.json()),
-  getDeal: (id) => fetch(`${API_BASE}/deals/${id}`).then((r) => r.json()),
-  createDeal: (data) =>
-    fetch(`${API_BASE}/deals`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).then((r) => r.json()),
-  updateDeal: (id, data) =>
-    fetch(`${API_BASE}/deals/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).then((r) => r.json()),
-  deleteDeals: (id) =>
-    fetch(`${API_BASE}/deals/${id}`, { method: "DELETE" }).then((r) =>
-      r.json(),
-    ),
-
-  // Tasks
-  getTasks: (filters = {}) => {
-    const query = new URLSearchParams(filters).toString();
-    return fetch(`${API_BASE}/tasks${query ? "?" + query : ""}`).then((r) =>
-      r.json(),
-    );
+// Create axios instance
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    "Content-Type": "application/json",
   },
-  getTask: (id) => fetch(`${API_BASE}/tasks/${id}`).then((r) => r.json()),
-  createTask: (data) =>
-    fetch(`${API_BASE}/tasks`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).then((r) => r.json()),
-  updateTask: (id, data) =>
-    fetch(`${API_BASE}/tasks/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).then((r) => r.json()),
-  deleteTask: (id) =>
-    fetch(`${API_BASE}/tasks/${id}`, { method: "DELETE" }).then((r) =>
-      r.json(),
-    ),
+});
 
-  // Notes
-  getNotes: (filters = {}) => {
-    const query = new URLSearchParams(filters).toString();
-    return fetch(`${API_BASE}/notes${query ? "?" + query : ""}`).then((r) =>
-      r.json(),
-    );
+// Add token to requests
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Handle response errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
   },
-  getNote: (id) => fetch(`${API_BASE}/notes/${id}`).then((r) => r.json()),
-  createNote: (data) =>
-    fetch(`${API_BASE}/notes`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).then((r) => r.json()),
-  updateNote: (id, data) =>
-    fetch(`${API_BASE}/notes/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).then((r) => r.json()),
-  deleteNote: (id) =>
-    fetch(`${API_BASE}/notes/${id}`, { method: "DELETE" }).then((r) =>
-      r.json(),
-    ),
+);
 
-  // Activities
-  getActivities: (filters = {}) => {
-    const query = new URLSearchParams(filters).toString();
-    return fetch(`${API_BASE}/activities${query ? "?" + query : ""}`).then(
-      (r) => r.json(),
-    );
-  },
-  getActivity: (id) =>
-    fetch(`${API_BASE}/activities/${id}`).then((r) => r.json()),
-  createActivity: (data) =>
-    fetch(`${API_BASE}/activities`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).then((r) => r.json()),
-  deleteActivity: (id) =>
-    fetch(`${API_BASE}/activities/${id}`, { method: "DELETE" }).then((r) =>
-      r.json(),
-    ),
-
-  // Reports
-  getReports: () => fetch(`${API_BASE}/reports`).then((r) => r.json()),
-  getSalesPipelineReport: () =>
-    fetch(`${API_BASE}/reports/sales-pipeline`).then((r) => r.json()),
-  getActivitySummaryReport: () =>
-    fetch(`${API_BASE}/reports/activity-summary`).then((r) => r.json()),
-  getLeadConversionReport: () =>
-    fetch(`${API_BASE}/reports/lead-conversion`).then((r) => r.json()),
-  getTeamPerformanceReport: () =>
-    fetch(`${API_BASE}/reports/team-performance`).then((r) => r.json()),
+// Auth APIs
+export const authAPI = {
+  register: (data) => api.post("/auth/register", data),
+  login: (data) => api.post("/auth/login", data),
+  getMe: () => api.get("/auth/me"),
 };
+
+// Leads APIs
+export const leadsAPI = {
+  getAll: () => api.get("/leads"),
+  getById: (id) => api.get(`/leads/${id}`),
+  create: (data) => api.post("/leads", data),
+  update: (id, data) => api.put(`/leads/${id}`, data),
+  delete: (id) => api.delete(`/leads/${id}`),
+};
+
+// Customers APIs
+export const customersAPI = {
+  getAll: () => api.get("/customers"),
+  getById: (id) => api.get(`/customers/${id}`),
+  create: (data) => api.post("/customers", data),
+  update: (id, data) => api.put(`/customers/${id}`, data),
+  delete: (id) => api.delete(`/customers/${id}`),
+};
+
+// Deals APIs
+export const dealsAPI = {
+  getAll: () => api.get("/deals"),
+  getById: (id) => api.get(`/deals/${id}`),
+  create: (data) => api.post("/deals", data),
+  update: (id, data) => api.put(`/deals/${id}`, data),
+  delete: (id) => api.delete(`/deals/${id}`),
+};
+
+// Tasks APIs
+export const tasksAPI = {
+  getAll: (filters = {}) => api.get("/tasks", { params: filters }),
+  getById: (id) => api.get(`/tasks/${id}`),
+  create: (data) => api.post("/tasks", data),
+  update: (id, data) => api.put(`/tasks/${id}`, data),
+  delete: (id) => api.delete(`/tasks/${id}`),
+};
+
+// Notes APIs
+export const notesAPI = {
+  getAll: (filters = {}) => api.get("/notes", { params: filters }),
+  getById: (id) => api.get(`/notes/${id}`),
+  create: (data) => api.post("/notes", data),
+  update: (id, data) => api.put(`/notes/${id}`, data),
+  delete: (id) => api.delete(`/notes/${id}`),
+};
+
+// Activities APIs
+export const activitiesAPI = {
+  getAll: (filters = {}) => api.get("/activities", { params: filters }),
+  getById: (id) => api.get(`/activities/${id}`),
+  create: (data) => api.post("/activities", data),
+  delete: (id) => api.delete(`/activities/${id}`),
+};
+
+export default api;
