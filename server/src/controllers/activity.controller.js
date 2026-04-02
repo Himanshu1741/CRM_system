@@ -9,7 +9,7 @@ export const getActivities = async (req, res) => {
 
     const activities = await Activity.findAll({
       where: filters,
-      order: [["createdAt", "DESC"]],
+      order: [["id", "DESC"]],
     });
 
     handleSuccess(res, activities, "Activities retrieved successfully");
