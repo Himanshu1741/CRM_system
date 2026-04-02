@@ -1,5 +1,4 @@
-import bcrypt from "bcrypt";
-import { User } from "../models/User.js";
+import User from "../models/User.js";
 
 export async function seedDefaultUser() {
   try {
@@ -9,16 +8,22 @@ export async function seedDefaultUser() {
     });
 
     if (existingUser) {
-      console.log("Default user already exists");
+      console.log("✅ Default user already exists");
+      console.log("📧 Email: himanshuagrawal257@gmail.com");
+      console.log("🔑 Password: Himanshu@2004");
       return;
     }
 
-    // Create default user
-    const hashedPassword = await bcrypt.hash("Himanshu@2004", 10);
-
+    // Create default user - DO NOT hash password here, let the model hook handle it
     await User.create({
       firstName: "Himanshu",
       lastName: "Agrawal",
+      email: "himanshuagrawal257@gmail.com",
+      password: "Himanshu@2004", // Plain password - will be hashed by beforeCreate hook
+      role: "admin",
+      isActive: true,
+    });
+
     console.log("✅ Default user created successfully");
     console.log("📧 Email: himanshuagrawal257@gmail.com");
     console.log("🔑 Password: Himanshu@2004");

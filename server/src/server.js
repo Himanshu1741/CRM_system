@@ -21,8 +21,8 @@ async function initializeDatabase() {
     await connection.end();
     console.log(`Database ${DB_NAME} ready`);
 
-    // Now sync with the database
-    await sequelize.sync({ force: true });
+    // Now sync with the database - use force: false to preserve existing data
+    await sequelize.sync({ force: false });
     console.log("Database connected");
 
     // Seed default user
