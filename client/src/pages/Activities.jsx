@@ -164,8 +164,3 @@ export default function Activities() {
     </Box>
   );
 }
-        )}
-      </div>
-    </div>
-  );
-}
