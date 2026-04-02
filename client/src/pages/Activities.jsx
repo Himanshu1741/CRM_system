@@ -19,18 +19,44 @@ import { activitiesAPI } from "../services/api";
 
 export default function Activities() {
   const [activities, setActivities] = useState([]);
+  const [allActivities, setAllActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filters, setFilters] = useState({});
+
+  const filterFields = [
+    {
+      name: "activityType",
+      label: "Activity Type",
+      type: "select",
+      options: [
+        { value: "call", label: "Call" },
+        { value: "email", label: "Email" },
+        { value: "meeting", label: "Meeting" },
+        { value: "other", label: "Other" },
+      ],
+    },
+    {
+      name: "relatedTo",
+      label: "Related To",
+      type: "text",
+      placeholder: "Search by related entity...",
+    },
+  ];
 
   useEffect(() => {
     fetchActivities();
   }, []);
 
+  useEffect(() => {
+    applyFilters();
+  }, [filters, allActivities]);
+
   const fetchActivities = async () => {
     try {
       setLoading(true);
       const response = await activitiesAPI.getAll();
-      setActivities(response.data.data || []);
+      setAllActivities(response.data.data || []);
       setError("");
     } catch (err) {
       setError("Failed to fetch activities");
@@ -38,6 +64,26 @@ export default function Activities() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const applyFilters = () => {
+    let filtered = [...allActivities];
+
+    Object.keys(filters).forEach((key) => {
+      const filterValue = filters[key];
+      if (filterValue && filterValue.trim() !== "") {
+        filtered = filtered.filter((activity) => {
+          const fieldValue = String(activity[key] || "").toLowerCase();
+          return fieldValue.includes(filterValue.toLowerCase());
+        });
+      }
+    });
+
+    setActivities(filtered);
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
   };
 
   const handleDelete = async (id) => {
@@ -88,6 +134,13 @@ export default function Activities() {
           {error}
         </Alert>
       )}
+
+      <AdvancedFilterPanel
+        filterFields={filterFields}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        sx={{ mb: 3 }}
+      />
 
       <TableContainer component={Paper}>
         <Table>

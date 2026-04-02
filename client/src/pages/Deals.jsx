@@ -27,10 +27,12 @@ import { dealsAPI } from "../services/api";
 
 export default function Deals() {
   const [deals, setDeals] = useState([]);
+  const [allDeals, setAllDeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [filters, setFilters] = useState({});
   const [formData, setFormData] = useState({
     dealName: "",
     amount: "",
@@ -41,15 +43,46 @@ export default function Deals() {
     description: "",
   });
 
+  const filterFields = [
+    {
+      name: "dealName",
+      label: "Deal Name",
+      type: "text",
+      placeholder: "Search by deal name...",
+    },
+    {
+      name: "stage",
+      label: "Stage",
+      type: "select",
+      options: [
+        { value: "prospecting", label: "Prospecting" },
+        { value: "negotiation", label: "Negotiation" },
+        { value: "proposal", label: "Proposal" },
+        { value: "won", label: "Won" },
+        { value: "lost", label: "Lost" },
+      ],
+    },
+    {
+      name: "customerId",
+      label: "Customer ID",
+      type: "text",
+      placeholder: "Search by customer ID...",
+    },
+  ];
+
   useEffect(() => {
     fetchDeals();
   }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [filters, allDeals]);
 
   const fetchDeals = async () => {
     try {
       setLoading(true);
       const response = await dealsAPI.getAll();
-      setDeals(response.data.data || []);
+      setAllDeals(response.data.data || []);
       setError("");
     } catch (err) {
       setError("Failed to fetch deals");
@@ -57,6 +90,26 @@ export default function Deals() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const applyFilters = () => {
+    let filtered = [...allDeals];
+
+    Object.keys(filters).forEach((key) => {
+      const filterValue = filters[key];
+      if (filterValue && filterValue.trim() !== "") {
+        filtered = filtered.filter((deal) => {
+          const fieldValue = String(deal[key] || "").toLowerCase();
+          return fieldValue.includes(filterValue.toLowerCase());
+        });
+      }
+    });
+
+    setDeals(filtered);
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
   };
 
   const handleOpenDialog = (deal = null) => {
@@ -172,6 +225,13 @@ export default function Deals() {
           {error}
         </Alert>
       )}
+
+      <AdvancedFilterPanel
+        filterFields={filterFields}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        sx={{ mb: 3 }}
+      />
 
       <TableContainer component={Paper}>
         <Table>

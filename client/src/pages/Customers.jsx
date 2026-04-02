@@ -27,10 +27,12 @@ import { customersAPI } from "../services/api";
 
 export default function Customers() {
   const [customers, setCustomers] = useState([]);
+  const [allCustomers, setAllCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [filters, setFilters] = useState({});
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -42,15 +44,61 @@ export default function Customers() {
     notes: "",
   });
 
+  const filterFields = [
+    {
+      name: "firstName",
+      label: "First Name",
+      type: "text",
+      placeholder: "Search by first name...",
+    },
+    {
+      name: "lastName",
+      label: "Last Name",
+      type: "text",
+      placeholder: "Search by last name...",
+    },
+    {
+      name: "email",
+      label: "Email",
+      type: "text",
+      placeholder: "Search by email...",
+    },
+    {
+      name: "company",
+      label: "Company",
+      type: "text",
+      placeholder: "Search by company...",
+    },
+    {
+      name: "industry",
+      label: "Industry",
+      type: "text",
+      placeholder: "Search by industry...",
+    },
+    {
+      name: "status",
+      label: "Status",
+      type: "select",
+      options: [
+        { value: "active", label: "Active" },
+        { value: "inactive", label: "Inactive" },
+      ],
+    },
+  ];
+
   useEffect(() => {
     fetchCustomers();
   }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [filters, allCustomers]);
 
   const fetchCustomers = async () => {
     try {
       setLoading(true);
       const response = await customersAPI.getAll();
-      setCustomers(response.data.data || []);
+      setAllCustomers(response.data.data || []);
       setError("");
     } catch (err) {
       setError("Failed to fetch customers");
@@ -58,6 +106,26 @@ export default function Customers() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const applyFilters = () => {
+    let filtered = [...allCustomers];
+
+    Object.keys(filters).forEach((key) => {
+      const filterValue = filters[key];
+      if (filterValue && filterValue.trim() !== "") {
+        filtered = filtered.filter((customer) => {
+          const fieldValue = String(customer[key] || "").toLowerCase();
+          return fieldValue.includes(filterValue.toLowerCase());
+        });
+      }
+    });
+
+    setCustomers(filtered);
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
   };
 
   const handleOpenDialog = (customer = null) => {
@@ -175,6 +243,13 @@ export default function Customers() {
           {error}
         </Alert>
       )}
+
+      <AdvancedFilterPanel
+        filterFields={filterFields}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        sx={{ mb: 3 }}
+      />
 
       <TableContainer component={Paper}>
         <Table>

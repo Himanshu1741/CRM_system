@@ -73,10 +73,7 @@ export default function Dashboard() {
           total: leads.length,
           byStatus: leadStatus,
           conversionRate: leads.length
-            ? (
-                (leadStatus.qualified / leads.length) *
-                100
-              ).toFixed(1)
+            ? ((leadStatus.qualified / leads.length) * 100).toFixed(1)
             : 0,
         },
         customers: {
@@ -91,10 +88,10 @@ export default function Dashboard() {
             deals.length > 0 ? (totalDealValue / deals.length).toFixed(0) : 0,
           wonDeals: dealStages.won,
           winRate: deals.length
-            ? (((dealStages.won + dealStages.lost) > 0
+            ? (dealStages.won + dealStages.lost > 0
                 ? (dealStages.won / (dealStages.won + dealStages.lost)) * 100
                 : 0
-              ).toFixed(1))
+              ).toFixed(1)
             : 0,
         },
         tasks: {
@@ -141,8 +138,15 @@ export default function Dashboard() {
   const StatCard = ({ title, value, icon: Icon, color = "#2196f3", trend }) => (
     <Card sx={{ p: 2.5, height: "100%" }}>
       <Stack spacing={1}>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-          <Typography variant="h6" sx={{ fontWeight: 600, color: "text.secondary" }}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+        >
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, color: "text.secondary" }}
+          >
             {title}
           </Typography>
           <Box sx={{ color, opacity: 0.7 }}>
@@ -209,7 +213,10 @@ export default function Dashboard() {
             title="Total Leads"
             value={stats.leads.total}
             icon={() => "👥"}
-            trend={{ positive: true, value: `${stats.leads.conversionRate}% qualified` }}
+            trend={{
+              positive: true,
+              value: `${stats.leads.conversionRate}% qualified`,
+            }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -240,8 +247,7 @@ export default function Dashboard() {
             value={stats.tasks.total}
             icon={() => "✅"}
             trend={{
-              positive:
-                stats.tasks.completionRate > 50,
+              positive: stats.tasks.completionRate > 50,
               value: `${stats.tasks.completionRate}% completed`,
             }}
           />
@@ -285,19 +291,25 @@ export default function Dashboard() {
               🎯 Deals Pipeline
             </Typography>
             <Stack spacing={1.5}>
-              <Box sx={{ display: "flex", justifyContent: "space-between", p: 1 }}>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", p: 1 }}
+              >
                 <Typography>Prospecting:</Typography>
                 <Typography sx={{ fontWeight: "bold" }}>
                   {stats.deals.byStage.prospecting}
                 </Typography>
               </Box>
-              <Box sx={{ display: "flex", justifyContent: "space-between", p: 1 }}>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", p: 1 }}
+              >
                 <Typography>Negotiation:</Typography>
                 <Typography sx={{ fontWeight: "bold" }}>
                   {stats.deals.byStage.negotiation}
                 </Typography>
               </Box>
-              <Box sx={{ display: "flex", justifyContent: "space-between", p: 1 }}>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", p: 1 }}
+              >
                 <Typography>Proposal:</Typography>
                 <Typography sx={{ fontWeight: "bold" }}>
                   {stats.deals.byStage.proposal}

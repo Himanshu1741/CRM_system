@@ -25,14 +25,17 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import AdvancedFilterPanel from "../components/AdvancedFilterPanel";
 import { notesAPI } from "../services/api";
 
 export default function Notes() {
   const [notes, setNotes] = useState([]);
+  const [allNotes, setAllNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [filters, setFilters] = useState({});
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -40,15 +43,39 @@ export default function Notes() {
     linkedId: "",
   });
 
+  const filterFields = [
+    {
+      name: "title",
+      label: "Title",
+      type: "text",
+      placeholder: "Search by title...",
+    },
+    {
+      name: "type",
+      label: "Type",
+      type: "select",
+      options: [
+        { value: "task", label: "Task" },
+        { value: "customer", label: "Customer" },
+        { value: "lead", label: "Lead" },
+        { value: "deal", label: "Deal" },
+      ],
+    },
+  ];
+
   useEffect(() => {
     fetchNotes();
   }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [filters, allNotes]);
 
   const fetchNotes = async () => {
     try {
       setLoading(true);
       const response = await notesAPI.getAll();
-      setNotes(response.data.data || []);
+      setAllNotes(response.data.data || []);
       setError("");
     } catch (err) {
       setError("Failed to fetch notes");
@@ -56,6 +83,26 @@ export default function Notes() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const applyFilters = () => {
+    let filtered = [...allNotes];
+
+    Object.keys(filters).forEach((key) => {
+      const filterValue = filters[key];
+      if (filterValue && filterValue.trim() !== "") {
+        filtered = filtered.filter((note) => {
+          const fieldValue = String(note[key] || "").toLowerCase();
+          return fieldValue.includes(filterValue.toLowerCase());
+        });
+      }
+    });
+
+    setNotes(filtered);
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
   };
 
   const handleOpenDialog = (note = null) => {
@@ -165,6 +212,13 @@ export default function Notes() {
           {error}
         </Alert>
       )}
+
+      <AdvancedFilterPanel
+        filterFields={filterFields}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        sx={{ mb: 3 }}
+      />
 
       <TableContainer component={Paper}>
         <Table>

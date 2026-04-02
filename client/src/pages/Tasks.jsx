@@ -25,14 +25,17 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import AdvancedFilterPanel from "../components/AdvancedFilterPanel";
 import { tasksAPI } from "../services/api";
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
+  const [allTasks, setAllTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [filters, setFilters] = useState({});
   const [formData, setFormData] = useState({
     taskName: "",
     assignedTo: "",
@@ -42,15 +45,54 @@ export default function Tasks() {
     description: "",
   });
 
+  const filterFields = [
+    {
+      name: "taskName",
+      label: "Task Name",
+      type: "text",
+      placeholder: "Search by task name...",
+    },
+    {
+      name: "assignedTo",
+      label: "Assigned To",
+      type: "text",
+      placeholder: "Search by assignee...",
+    },
+    {
+      name: "priority",
+      label: "Priority",
+      type: "select",
+      options: [
+        { value: "high", label: "High" },
+        { value: "medium", label: "Medium" },
+        { value: "low", label: "Low" },
+      ],
+    },
+    {
+      name: "status",
+      label: "Status",
+      type: "select",
+      options: [
+        { value: "todo", label: "To Do" },
+        { value: "in-progress", label: "In Progress" },
+        { value: "completed", label: "Completed" },
+      ],
+    },
+  ];
+
   useEffect(() => {
     fetchTasks();
   }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [filters, allTasks]);
 
   const fetchTasks = async () => {
     try {
       setLoading(true);
       const response = await tasksAPI.getAll();
-      setTasks(response.data.data || []);
+      setAllTasks(response.data.data || []);
       setError("");
     } catch (err) {
       setError("Failed to fetch tasks");
@@ -58,6 +100,26 @@ export default function Tasks() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const applyFilters = () => {
+    let filtered = [...allTasks];
+
+    Object.keys(filters).forEach((key) => {
+      const filterValue = filters[key];
+      if (filterValue && filterValue.trim() !== "") {
+        filtered = filtered.filter((task) => {
+          const fieldValue = String(task[key] || "").toLowerCase();
+          return fieldValue.includes(filterValue.toLowerCase());
+        });
+      }
+    });
+
+    setTasks(filtered);
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
   };
 
   const handleOpenDialog = (task = null) => {
@@ -171,6 +233,13 @@ export default function Tasks() {
           {error}
         </Alert>
       )}
+
+      <AdvancedFilterPanel
+        filterFields={filterFields}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        sx={{ mb: 3 }}
+      />
 
       <TableContainer component={Paper}>
         <Table>

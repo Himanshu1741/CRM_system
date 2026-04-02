@@ -2,37 +2,40 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {
-    Alert,
-    Box,
-    Button,
-    CircularProgress,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Grid,
-    IconButton,
-    MenuItem,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TextField,
-    Tooltip,
-    Typography,
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  MenuItem,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import AdvancedFilterPanel from "../components/AdvancedFilterPanel";
 import { leadsAPI } from "../services/api";
 
 export default function Leads() {
   const [leads, setLeads] = useState([]);
+  const [allLeads, setAllLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [filters, setFilters] = useState({});
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -44,15 +47,68 @@ export default function Leads() {
     notes: "",
   });
 
+  const filterFields = [
+    {
+      name: "firstName",
+      label: "First Name",
+      type: "text",
+      placeholder: "Search by first name...",
+    },
+    {
+      name: "lastName",
+      label: "Last Name",
+      type: "text",
+      placeholder: "Search by last name...",
+    },
+    {
+      name: "email",
+      label: "Email",
+      type: "text",
+      placeholder: "Search by email...",
+    },
+    {
+      name: "company",
+      label: "Company",
+      type: "text",
+      placeholder: "Search by company...",
+    },
+    {
+      name: "status",
+      label: "Status",
+      type: "select",
+      options: [
+        { value: "new", label: "New" },
+        { value: "contacted", label: "Contacted" },
+        { value: "qualified", label: "Qualified" },
+        { value: "lost", label: "Lost" },
+      ],
+    },
+    {
+      name: "source",
+      label: "Source",
+      type: "select",
+      options: [
+        { value: "website", label: "Website" },
+        { value: "referral", label: "Referral" },
+        { value: "cold_call", label: "Cold Call" },
+        { value: "email", label: "Email" },
+      ],
+    },
+  ];
+
   useEffect(() => {
     fetchLeads();
   }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [filters, allLeads]);
 
   const fetchLeads = async () => {
     try {
       setLoading(true);
       const response = await leadsAPI.getAll();
-      setLeads(response.data.data || []);
+      setAllLeads(response.data.data || []);
       setError("");
     } catch (err) {
       setError("Failed to fetch leads");
@@ -60,6 +116,26 @@ export default function Leads() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const applyFilters = () => {
+    let filtered = [...allLeads];
+
+    Object.keys(filters).forEach((key) => {
+      const filterValue = filters[key];
+      if (filterValue && filterValue.trim() !== "") {
+        filtered = filtered.filter((lead) => {
+          const fieldValue = String(lead[key] || "").toLowerCase();
+          return fieldValue.includes(filterValue.toLowerCase());
+        });
+      }
+    });
+
+    setLeads(filtered);
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
   };
 
   const handleOpenDialog = (lead = null) => {
@@ -177,6 +253,13 @@ export default function Leads() {
           {error}
         </Alert>
       )}
+
+      <AdvancedFilterPanel
+        filterFields={filterFields}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        sx={{ mb: 3 }}
+      />
 
       <TableContainer component={Paper}>
         <Table>
