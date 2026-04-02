@@ -1,23 +1,17 @@
 import Customer from "../models/Customer.js";
 
-export const getCustomers = async (req, res, next) => {
+export const getCustomers = async (req, res) => {
   try {
-    const customers = await Customer.find().populate(
-      "assignedTo",
-      "name email",
-    );
+    const customers = await Customer.findAll();
     res.status(200).json({ success: true, data: customers });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const getCustomer = async (req, res, next) => {
+export const getCustomer = async (req, res) => {
   try {
-    const customer = await Customer.findById(req.params.id).populate(
-      "assignedTo",
-      "name email",
-    );
+    const customer = await Customer.findByPk(req.params.id);
 
     if (!customer) {
       return res.status(404).json({ message: "Customer not found" });
@@ -25,15 +19,14 @@ export const getCustomer = async (req, res, next) => {
 
     res.status(200).json({ success: true, data: customer });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const createCustomer = async (req, res, next) => {
+export const createCustomer = async (req, res) => {
   try {
     const {
-      firstName,
-      lastName,
+      name,
       email,
       phone,
       company,
@@ -47,15 +40,12 @@ export const createCustomer = async (req, res, next) => {
       notes,
     } = req.body;
 
-    if (!firstName || !lastName || !email) {
-      return res
-        .status(400)
-        .json({ message: "Please provide required fields" });
+    if (!name || !email) {
+      return res.status(400).json({ message: "Please provide name and email" });
     }
 
-    const customer = new Customer({
-      firstName,
-      lastName,
+    const customer = await Customer.create({
+      name,
       email,
       phone,
       company,
@@ -65,48 +55,44 @@ export const createCustomer = async (req, res, next) => {
       state,
       zipCode,
       country,
-      status,
+      status: status || "prospect",
       notes,
-      createdBy: req.user?.id,
     });
-
-    await customer.save();
-    await customer.populate("assignedTo", "name email");
 
     res.status(201).json({ success: true, data: customer });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const updateCustomer = async (req, res, next) => {
+export const updateCustomer = async (req, res) => {
   try {
-    let customer = await Customer.findById(req.params.id);
+    const customer = await Customer.findByPk(req.params.id);
 
     if (!customer) {
       return res.status(404).json({ message: "Customer not found" });
     }
 
-    customer = Object.assign(customer, req.body);
-    await customer.save();
-    await customer.populate("assignedTo", "name email");
+    await customer.update(req.body);
 
     res.status(200).json({ success: true, data: customer });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const deleteCustomer = async (req, res, next) => {
+export const deleteCustomer = async (req, res) => {
   try {
-    const customer = await Customer.findByIdAndDelete(req.params.id);
+    const customer = await Customer.findByPk(req.params.id);
 
     if (!customer) {
       return res.status(404).json({ message: "Customer not found" });
     }
 
+    await customer.destroy();
+
     res.status(200).json({ success: true, message: "Customer deleted" });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };

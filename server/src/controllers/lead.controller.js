@@ -1,20 +1,17 @@
 import Lead from "../models/Lead.js";
 
-export const getLeads = async (req, res, next) => {
+export const getLeads = async (req, res) => {
   try {
-    const leads = await Lead.find().populate("assignedTo", "name email");
+    const leads = await Lead.findAll();
     res.status(200).json({ success: true, data: leads });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const getLead = async (req, res, next) => {
+export const getLead = async (req, res) => {
   try {
-    const lead = await Lead.findById(req.params.id).populate(
-      "assignedTo",
-      "name email",
-    );
+    const lead = await Lead.findByPk(req.params.id);
 
     if (!lead) {
       return res.status(404).json({ message: "Lead not found" });
@@ -22,78 +19,62 @@ export const getLead = async (req, res, next) => {
 
     res.status(200).json({ success: true, data: lead });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const createLead = async (req, res, next) => {
+export const createLead = async (req, res) => {
   try {
-    const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      company,
-      status,
-      source,
-      notes,
-    } = req.body;
+    const { name, email, phone, company, status, source, notes } = req.body;
 
-    if (!firstName || !lastName || !email) {
-      return res
-        .status(400)
-        .json({ message: "Please provide required fields" });
+    if (!name || !email) {
+      return res.status(400).json({ message: "Please provide name and email" });
     }
 
-    const lead = new Lead({
-      firstName,
-      lastName,
+    const lead = await Lead.create({
+      name,
       email,
       phone,
       company,
-      status,
-      source,
+      status: status || "new",
+      source: source || "website",
       notes,
-      createdBy: req.user?.id,
     });
-
-    await lead.save();
-    await lead.populate("assignedTo", "name email");
 
     res.status(201).json({ success: true, data: lead });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const updateLead = async (req, res, next) => {
+export const updateLead = async (req, res) => {
   try {
-    let lead = await Lead.findById(req.params.id);
+    const lead = await Lead.findByPk(req.params.id);
 
     if (!lead) {
       return res.status(404).json({ message: "Lead not found" });
     }
 
-    lead = Object.assign(lead, req.body);
-    await lead.save();
-    await lead.populate("assignedTo", "name email");
+    await lead.update(req.body);
 
     res.status(200).json({ success: true, data: lead });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const deleteLead = async (req, res, next) => {
+export const deleteLead = async (req, res) => {
   try {
-    const lead = await Lead.findByIdAndDelete(req.params.id);
+    const lead = await Lead.findByPk(req.params.id);
 
     if (!lead) {
       return res.status(404).json({ message: "Lead not found" });
     }
 
+    await lead.destroy();
+
     res.status(200).json({ success: true, message: "Lead deleted" });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };

@@ -1,22 +1,27 @@
+import Customer from "../models/Customer.js";
 import Deal from "../models/Deal.js";
 
-export const getDeals = async (req, res, next) => {
+export const getDeals = async (req, res) => {
   try {
-    const deals = await Deal.find()
-      .populate("customer", "firstName lastName email company")
-      .populate("assignedTo", "name email");
+    const deals = await Deal.findAll({
+      include: [
+        { model: Customer, attributes: ["id", "name", "email", "company"] },
+      ],
+    });
 
     res.status(200).json({ success: true, data: deals });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const getDeal = async (req, res, next) => {
+export const getDeal = async (req, res) => {
   try {
-    const deal = await Deal.findById(req.params.id)
-      .populate("customer", "firstName lastName email company")
-      .populate("assignedTo", "name email");
+    const deal = await Deal.findByPk(req.params.id, {
+      include: [
+        { model: Customer, attributes: ["id", "name", "email", "company"] },
+      ],
+    });
 
     if (!deal) {
       return res.status(404).json({ message: "Deal not found" });
@@ -24,16 +29,16 @@ export const getDeal = async (req, res, next) => {
 
     res.status(200).json({ success: true, data: deal });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const createDeal = async (req, res, next) => {
+export const createDeal = async (req, res) => {
   try {
     const {
       title,
       description,
-      customer,
+      customerId,
       amount,
       stage,
       probability,
@@ -41,64 +46,69 @@ export const createDeal = async (req, res, next) => {
       notes,
     } = req.body;
 
-    if (!title || !customer || !amount) {
+    if (!title || !customerId || !amount) {
       return res
         .status(400)
-        .json({ message: "Please provide required fields" });
+        .json({ message: "Please provide title, customerId, and amount" });
     }
 
-    const deal = new Deal({
+    const deal = await Deal.create({
       title,
       description,
-      customer,
+      customerId,
       amount,
-      stage,
-      probability,
+      stage: stage || "prospect",
+      probability: probability || 0,
       expectedCloseDate,
       notes,
-      assignedTo: req.user?.id,
-      createdBy: req.user?.id,
     });
 
-    await deal.save();
-    await deal.populate("customer", "firstName lastName email company");
-    await deal.populate("assignedTo", "name email");
+    const dealWithCustomer = await Deal.findByPk(deal.id, {
+      include: [
+        { model: Customer, attributes: ["id", "name", "email", "company"] },
+      ],
+    });
 
-    res.status(201).json({ success: true, data: deal });
+    res.status(201).json({ success: true, data: dealWithCustomer });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const updateDeal = async (req, res, next) => {
+export const updateDeal = async (req, res) => {
   try {
-    let deal = await Deal.findById(req.params.id);
+    const deal = await Deal.findByPk(req.params.id);
 
     if (!deal) {
       return res.status(404).json({ message: "Deal not found" });
     }
 
-    deal = Object.assign(deal, req.body);
-    await deal.save();
-    await deal.populate("customer", "firstName lastName email company");
-    await deal.populate("assignedTo", "name email");
+    await deal.update(req.body);
 
-    res.status(200).json({ success: true, data: deal });
+    const dealWithCustomer = await Deal.findByPk(deal.id, {
+      include: [
+        { model: Customer, attributes: ["id", "name", "email", "company"] },
+      ],
+    });
+
+    res.status(200).json({ success: true, data: dealWithCustomer });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const deleteDeal = async (req, res, next) => {
+export const deleteDeal = async (req, res) => {
   try {
-    const deal = await Deal.findByIdAndDelete(req.params.id);
+    const deal = await Deal.findByPk(req.params.id);
 
     if (!deal) {
       return res.status(404).json({ message: "Deal not found" });
     }
+
+    await deal.destroy();
 
     res.status(200).json({ success: true, message: "Deal deleted" });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };

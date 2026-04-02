@@ -1,32 +1,19 @@
 import Note from "../models/Note.js";
 
-export const getNotes = async (req, res, next) => {
+export const getNotes = async (req, res) => {
   try {
-    const filters = {};
-    if (req.query.lead) filters.lead = req.query.lead;
-    if (req.query.customer) filters.customer = req.query.customer;
-    if (req.query.deal) filters.deal = req.query.deal;
-
-    const notes = await Note.find(filters)
-      .populate("lead", "firstName lastName")
-      .populate("customer", "firstName lastName")
-      .populate("deal", "title")
-      .populate("createdBy", "name email")
-      .sort({ createdAt: -1 });
-
+    const notes = await Note.findAll({
+      order: [["createdAt", "DESC"]],
+    });
     res.status(200).json({ success: true, data: notes });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const getNote = async (req, res, next) => {
+export const getNote = async (req, res) => {
   try {
-    const note = await Note.findById(req.params.id)
-      .populate("lead", "firstName lastName")
-      .populate("customer", "firstName lastName")
-      .populate("deal", "title")
-      .populate("createdBy", "name email");
+    const note = await Note.findByPk(req.params.id);
 
     if (!note) {
       return res.status(404).json({ message: "Note not found" });
@@ -34,13 +21,13 @@ export const getNote = async (req, res, next) => {
 
     res.status(200).json({ success: true, data: note });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const createNote = async (req, res, next) => {
+export const createNote = async (req, res) => {
   try {
-    const { title, content, lead, customer, deal } = req.body;
+    const { title, content } = req.body;
 
     if (!title || !content) {
       return res
@@ -48,59 +35,45 @@ export const createNote = async (req, res, next) => {
         .json({ message: "Title and content are required" });
     }
 
-    const note = new Note({
+    const note = await Note.create({
       title,
       content,
-      lead,
-      customer,
-      deal,
-      createdBy: req.user?.id,
     });
-
-    await note.save();
-    await note.populate("lead", "firstName lastName");
-    await note.populate("customer", "firstName lastName");
-    await note.populate("deal", "title");
-    await note.populate("createdBy", "name email");
 
     res.status(201).json({ success: true, data: note });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const updateNote = async (req, res, next) => {
+export const updateNote = async (req, res) => {
   try {
-    let note = await Note.findById(req.params.id);
+    const note = await Note.findByPk(req.params.id);
 
     if (!note) {
       return res.status(404).json({ message: "Note not found" });
     }
 
-    note = Object.assign(note, req.body);
-    await note.save();
-
-    await note.populate("lead", "firstName lastName");
-    await note.populate("customer", "firstName lastName");
-    await note.populate("deal", "title");
-    await note.populate("createdBy", "name email");
+    await note.update(req.body);
 
     res.status(200).json({ success: true, data: note });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const deleteNote = async (req, res, next) => {
+export const deleteNote = async (req, res) => {
   try {
-    const note = await Note.findByIdAndDelete(req.params.id);
+    const note = await Note.findByPk(req.params.id);
 
     if (!note) {
       return res.status(404).json({ message: "Note not found" });
     }
 
+    await note.destroy();
+
     res.status(200).json({ success: true, message: "Note deleted" });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };

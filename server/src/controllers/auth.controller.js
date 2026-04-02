@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
@@ -7,7 +8,7 @@ const generateToken = (id, role) => {
   });
 };
 
-export const register = async (req, res, next) => {
+export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -17,37 +18,38 @@ export const register = async (req, res, next) => {
         .json({ message: "Please provide all required fields" });
     }
 
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ where: { email } });
     if (user) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    user = new User({
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user = await User.create({
       name,
       email,
-      password,
+      password: hashedPassword,
+      role: "user",
     });
 
-    await user.save();
-
-    const token = generateToken(user._id, user.role);
+    const token = generateToken(user.id, user.role);
 
     res.status(201).json({
       success: true,
       token,
       user: {
-        id: user._id,
+        id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
       },
     });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-export const login = async (req, res, next) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -57,7 +59,7 @@ export const login = async (req, res, next) => {
         .json({ message: "Please provide email and password" });
     }
 
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ where: { email } });
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -69,28 +71,28 @@ export const login = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = generateToken(user._id, user.role);
+    const token = generateToken(user.id, user.role);
 
     res.status(200).json({
       success: true,
       token,
       user: {
-        id: user._id,
+        id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
       },
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const getMe = async (req, res, next) => {
+export const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findByPk(req.user.id);
     res.status(200).json({ success: true, data: user });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
