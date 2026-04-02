@@ -72,7 +72,10 @@ export default function Dashboard() {
         lost: deals.filter((d) => d.stage === "lost").length,
       };
 
-      const totalDealValue = deals.reduce((sum, d) => sum + (d.amount || 0), 0);
+      const totalDealValue = deals.reduce(
+        (sum, d) => sum + (parseFloat(d.amount) || 0),
+        0,
+      );
 
       const taskStatus = {
         todo: tasks.filter((t) => t.status === "todo").length,

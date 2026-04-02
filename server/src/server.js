@@ -5,16 +5,6 @@ import sequelize from "./config/db.js";
 import { seedDefaultUser } from "./seeds/seedUsers.js";
 
 // Import all models to register relationships before sync
-import Activity from "./models/Activity.js";
-import Client from "./models/Client.js";
-import Communication from "./models/Communication.js";
-import Customer from "./models/Customer.js";
-import Deal from "./models/Deal.js";
-import Lead from "./models/Lead.js";
-import Note from "./models/Note.js";
-import Staff from "./models/Staff.js";
-import Task from "./models/Task.js";
-import User from "./models/User.js";
 
 const PORT = process.env.PORT || 5000;
 const DB_NAME = process.env.DB_NAME;
