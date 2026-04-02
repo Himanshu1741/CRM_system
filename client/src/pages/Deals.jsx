@@ -23,6 +23,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { AdvancedFilterPanel } from "../components/AdvancedFilterPanel";
 import { dealsAPI } from "../services/api";
 
 export default function Deals() {
