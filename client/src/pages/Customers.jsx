@@ -231,11 +231,18 @@ export default function Customers() {
         </Table>
       </TableContainer>
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>
           {editingId ? "Edit Customer" : "Add New Customer"}
         </DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}>
+        <DialogContent
+          sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}
+        >
           <TextField
             label="First Name"
             name="firstName"
@@ -299,7 +306,6 @@ export default function Customers() {
           </Button>
         </DialogActions>
       </Dialog>
-      </div>
-    </div>
+    </Box>
   );
 }
