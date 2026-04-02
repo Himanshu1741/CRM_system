@@ -5,9 +5,10 @@
   "main": "server/src/server.js",
   "scripts": {
     "start": "node server/src/server.js",
-    "dev": "nodemon server/src/server.js",
-    "client": "cd client && npm start",
-    "server": "cd server && npm start"
+    "server": "cd server && npm start",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "install-all": "cd server && npm install && cd ../client && npm install"
   },
   "keywords": [
     "crm",
@@ -15,5 +16,8 @@
     "management"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
 }
