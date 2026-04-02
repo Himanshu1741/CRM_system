@@ -1,34 +1,31 @@
-import mongoose from "mongoose";
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
 
-const noteSchema = new mongoose.Schema(
+const Note = sequelize.define(
+  "Note",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     title: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     content: {
-      type: String,
-      required: true,
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
-    lead: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Lead",
-    },
-    customer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Customer",
-    },
-    deal: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Deal",
-    },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
   },
-  { timestamps: true },
+  {
+    tableName: "notes",
+    timestamps: false,
+  },
 );
 
-export default mongoose.model("Note", noteSchema);
+export default Note;

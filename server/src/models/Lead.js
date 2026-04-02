@@ -1,43 +1,48 @@
-import mongoose from "mongoose";
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
 
-const leadSchema = new mongoose.Schema(
+const Lead = sequelize.define(
+  "Lead",
   {
-    firstName: {
-      type: String,
-      required: true,
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    lastName: {
-      type: String,
-      required: true,
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     email: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    phone: String,
-    company: String,
+    phone: DataTypes.STRING,
+    company: DataTypes.STRING,
     status: {
-      type: String,
-      enum: ["new", "contacted", "qualified", "unqualified"],
-      default: "new",
+      type: DataTypes.ENUM("new", "contacted", "qualified", "unqualified"),
+      defaultValue: "new",
     },
     source: {
-      type: String,
-      enum: ["website", "referral", "campaign", "cold-call", "other"],
-      default: "website",
+      type: DataTypes.ENUM(
+        "website",
+        "referral",
+        "campaign",
+        "cold-call",
+        "other",
+      ),
+      defaultValue: "website",
     },
-    notes: String,
-    assignedTo: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+    notes: DataTypes.TEXT,
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
   },
-  { timestamps: true },
+  {
+    tableName: "leads",
+    timestamps: false,
+  },
 );
 
-export default mongoose.model("Lead", leadSchema);
+export default Lead;

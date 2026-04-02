@@ -28,38 +28,44 @@ server/src/modules/
 ## Module Layers
 
 ### 1. Routes Layer (`*.routes.js`)
+
 - Defines HTTP endpoints
 - Validates authentication and authorization middleware
 - Routes requests to controllers
 
 Example:
+
 ```javascript
-router.get('/:id', getTask)
-router.post('/', protect, createTask)
+router.get("/:id", getTask);
+router.post("/", protect, createTask);
 ```
 
 ### 2. Controller Layer (`*.controller.js`)
+
 - Handles HTTP request/response
 - Validates input parameters
 - Calls service methods
 - Returns formatted JSON responses
 
 Example:
+
 ```javascript
 export const createTask = async (req, res, next) => {
   // Validate input
   // Call service
   // Return response
-}
+};
 ```
 
 ### 3. Service Layer (`*.service.js`)
+
 - Contains all business logic
 - Handles database operations
 - Performs data transformations
 - Can be reused by multiple controllers
 
 Example:
+
 ```javascript
 export class TaskService {
   static async create(taskData, userId) {
@@ -73,25 +79,30 @@ export class TaskService {
 ## Benefits of This Architecture
 
 ### 1. **Scalability**
+
 - Easy to add new modules without affecting existing code
 - Each module is independent and testable
 
 ### 2. **Maintainability**
+
 - Clear separation of concerns
 - Each layer has a specific responsibility
 - Easier to debug and fix issues
 
 ### 3. **Reusability**
+
 - Services can be used by multiple controllers
 - Shared middleware
 - Consistent error handling
 
 ### 4. **Testing**
+
 - Easy to unit test services in isolation
 - Mock dependencies easily
 - Test at each layer independently
 
 ### 5. **Code Organization**
+
 - Related code grouped together
 - Easier to navigate and understand
 - Clear folder structure
@@ -105,39 +116,44 @@ To add a new feature to the CRM:
 2. **Create the Model** in `server/src/models/{Feature}.js`
 
 3. **Create the Service** (`{feature}.service.js`)
+
 ```javascript
 export class FeatureService {
-  static async getAll() { }
-  static async getById(id) { }
-  static async create(data, userId) { }
-  static async update(id, data) { }
-  static async delete(id) { }
+  static async getAll() {}
+  static async getById(id) {}
+  static async create(data, userId) {}
+  static async update(id, data) {}
+  static async delete(id) {}
 }
 ```
 
 4. **Create the Controller** (`{feature}.controller.js`)
+
 ```javascript
 export const getFeatures = async (req, res, next) => {
-  const data = await FeatureService.getAll()
-  res.json({ success: true, data })
-}
+  const data = await FeatureService.getAll();
+  res.json({ success: true, data });
+};
 ```
 
 5. **Create the Routes** (`{feature}.routes.js`)
+
 ```javascript
-router.get('/', getFeatures)
-router.post('/', protect, createFeature)
+router.get("/", getFeatures);
+router.post("/", protect, createFeature);
 ```
 
 6. **Export in `modules/index.js`**
+
 ```javascript
-import featureRoutes from './features/feature.routes.js'
-export default { features: featureRoutes }
+import featureRoutes from "./features/feature.routes.js";
+export default { features: featureRoutes };
 ```
 
 7. **Mount in `app.js`**
+
 ```javascript
-app.use('/api/features', modules.features)
+app.use("/api/features", modules.features);
 ```
 
 ## Service Class Pattern
@@ -176,7 +192,7 @@ Errors are handled at the middleware level:
 try {
   // Business logic
 } catch (error) {
-  next(error)  // Pass to errorHandler middleware
+  next(error); // Pass to errorHandler middleware
 }
 ```
 
@@ -185,8 +201,8 @@ try {
 Protected routes use middleware:
 
 ```javascript
-router.post('/', protect, createItem)  // Requires valid JWT
-router.delete('/:id', protect, deleteItem)
+router.post("/", protect, createItem); // Requires valid JWT
+router.delete("/:id", protect, deleteItem);
 ```
 
 ## Data Population
@@ -194,8 +210,8 @@ router.delete('/:id', protect, deleteItem)
 Services automatically populate related data:
 
 ```javascript
-await task.populate('assignedTo', 'name email')
-await task.populate('createdBy', 'name email')
+await task.populate("assignedTo", "name email");
+await task.populate("createdBy", "name email");
 ```
 
 ## Performance Considerations

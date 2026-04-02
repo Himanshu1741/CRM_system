@@ -1,47 +1,37 @@
-import mongoose from "mongoose";
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
 
-const taskSchema = new mongoose.Schema(
+const Task = sequelize.define(
+  "Task",
   {
-    title: {
-      type: String,
-      required: true,
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    description: String,
-    dueDate: Date,
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    description: DataTypes.TEXT,
+    dueDate: DataTypes.DATE,
     priority: {
-      type: String,
-      enum: ["low", "medium", "high", "urgent"],
-      default: "medium",
+      type: DataTypes.ENUM("low", "medium", "high", "urgent"),
+      defaultValue: "medium",
     },
     status: {
-      type: String,
-      enum: ["pending", "in-progress", "completed", "cancelled"],
-      default: "pending",
+      type: DataTypes.ENUM("pending", "in-progress", "completed", "cancelled"),
+      defaultValue: "pending",
     },
-    lead: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Lead",
-    },
-    customer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Customer",
-    },
-    deal: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Deal",
-    },
-    assignedTo: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
   },
-  { timestamps: true },
+  {
+    tableName: "tasks",
+    timestamps: false,
+  },
 );
 
-export default mongoose.model("Task", taskSchema);
+export default Task;

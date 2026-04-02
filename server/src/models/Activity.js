@@ -1,35 +1,38 @@
-import mongoose from "mongoose";
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
 
-const activitySchema = new mongoose.Schema(
+const Activity = sequelize.define(
+  "Activity",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     type: {
-      type: String,
-      enum: ["call", "email", "meeting", "note", "task", "status-change"],
-      required: true,
+      type: DataTypes.ENUM(
+        "call",
+        "email",
+        "meeting",
+        "note",
+        "task",
+        "status-change",
+      ),
+      allowNull: false,
     },
     description: {
-      type: String,
-      required: true,
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
-    lead: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Lead",
-    },
-    customer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Customer",
-    },
-    deal: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Deal",
-    },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
   },
-  { timestamps: true },
+  {
+    tableName: "activities",
+    timestamps: false,
+  },
 );
 
-export default mongoose.model("Activity", activitySchema);
+export default Activity;

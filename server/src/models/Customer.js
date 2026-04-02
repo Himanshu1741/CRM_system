@@ -1,48 +1,48 @@
-import mongoose from "mongoose";
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
 
-const customerSchema = new mongoose.Schema(
+const Customer = sequelize.define(
+  "Customer",
   {
-    firstName: {
-      type: String,
-      required: true,
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    lastName: {
-      type: String,
-      required: true,
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     email: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    phone: String,
-    company: String,
-    industry: String,
-    address: String,
-    city: String,
-    state: String,
-    zipCode: String,
-    country: String,
+    phone: DataTypes.STRING,
+    company: DataTypes.STRING,
+    industry: DataTypes.STRING,
+    address: DataTypes.STRING,
+    city: DataTypes.STRING,
+    state: DataTypes.STRING,
+    zipCode: DataTypes.STRING,
+    country: DataTypes.STRING,
     status: {
-      type: String,
-      enum: ["active", "inactive", "prospect"],
-      default: "prospect",
+      type: DataTypes.ENUM("active", "inactive", "prospect"),
+      defaultValue: "prospect",
     },
     totalSpent: {
-      type: Number,
-      default: 0,
+      type: DataTypes.DECIMAL(12, 2),
+      defaultValue: 0,
     },
-    notes: String,
-    assignedTo: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+    notes: DataTypes.TEXT,
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
   },
-  { timestamps: true },
+  {
+    tableName: "customers",
+    timestamps: false,
+  },
 );
 
-export default mongoose.model("Customer", customerSchema);
+export default Customer;

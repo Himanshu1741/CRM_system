@@ -1,0 +1,2 @@
+CREATE DATABASE IF NOT EXISTS crm_db;
+USE crm_db;

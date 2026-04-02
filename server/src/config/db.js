@@ -1,27 +1,16 @@
-import mongoose from "mongoose";
+import dotenv from "dotenv";
+import { Sequelize } from "sequelize";
 
-export const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(
-      process.env.MONGODB_URI || "mongodb://localhost:27017/crm-system",
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      },
-    );
-    console.log(`MongoDB connected: ${conn.connection.host}`);
-    return conn;
-  } catch (error) {
-    console.error(`Error: ${error.message}`);
-    process.exit(1);
-  }
-};
+dotenv.config();
 
-export const disconnectDB = async () => {
-  try {
-    await mongoose.disconnect();
-    console.log("MongoDB disconnected");
-  } catch (error) {
-    console.error(`Error: ${error.message}`);
-  }
-};
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: "mysql",
+  },
+);
+
+export default sequelize;

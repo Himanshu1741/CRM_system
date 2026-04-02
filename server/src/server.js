@@ -1,12 +1,14 @@
 import "dotenv/config";
 import app from "./app.js";
-import { connectDB } from "./config/db.js";
+import sequelize from "./config/db.js";
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    await connectDB();
+    await sequelize.authenticate();
+    console.log("Database connected successfully");
+
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });

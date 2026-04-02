@@ -1,53 +1,59 @@
-import mongoose from "mongoose";
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
+import Customer from "./Customer.js";
 
-const dealSchema = new mongoose.Schema(
+const Deal = sequelize.define(
+  "Deal",
   {
-    title: {
-      type: String,
-      required: true,
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    description: String,
-    customer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Customer",
-      required: true,
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    description: DataTypes.TEXT,
+    customerId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Customer,
+        key: "id",
+      },
     },
     amount: {
-      type: Number,
-      required: true,
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: false,
     },
     stage: {
-      type: String,
-      enum: [
+      type: DataTypes.ENUM(
         "prospect",
         "negotiation",
         "proposal",
         "closed-won",
         "closed-lost",
-      ],
-      default: "prospect",
+      ),
+      defaultValue: "prospect",
     },
     probability: {
-      type: Number,
-      min: 0,
-      max: 100,
-      default: 0,
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
-    expectedCloseDate: Date,
-    actualCloseDate: Date,
-    notes: String,
-    assignedTo: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+    expectedCloseDate: DataTypes.DATE,
+    actualCloseDate: DataTypes.DATE,
+    notes: DataTypes.TEXT,
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
   },
-  { timestamps: true },
+  {
+    tableName: "deals",
+    timestamps: false,
+  },
 );
 
-export default mongoose.model("Deal", dealSchema);
+Deal.belongsTo(Customer, { foreignKey: "customerId" });
+
+export default Deal;
