@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 
@@ -26,14 +26,6 @@ const User = sequelize.define(
     role: {
       type: DataTypes.ENUM("admin", "manager", "user"),
       defaultValue: "user",
-    },
-    isActive: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
     },
   },
   {
