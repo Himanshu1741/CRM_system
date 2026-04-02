@@ -14,18 +14,25 @@ const Task = sequelize.define(
       allowNull: false,
     },
     description: DataTypes.TEXT,
-    dueDate: DataTypes.DATE,
-    priority: {
-      type: DataTypes.ENUM("low", "medium", "high", "urgent"),
-      defaultValue: "medium",
-    },
     status: {
-      type: DataTypes.ENUM("pending", "in-progress", "completed", "cancelled"),
+      type: DataTypes.STRING,
       defaultValue: "pending",
     },
-    createdAt: {
+    priority: {
+      type: DataTypes.STRING,
+      defaultValue: "medium",
+    },
+    assignedTo: {
+      type: DataTypes.INTEGER,
+      field: "assigned_to",
+    },
+    dueDate: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      field: "due_date",
+    },
+    createdBy: {
+      type: DataTypes.INTEGER,
+      field: "created_by",
     },
   },
   {

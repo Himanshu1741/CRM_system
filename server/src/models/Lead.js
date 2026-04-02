@@ -9,8 +9,14 @@ const Lead = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    firstName: {
       type: DataTypes.STRING,
+      field: "first_name",
+      allowNull: false,
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      field: "last_name",
       allowNull: false,
     },
     email: {
@@ -20,23 +26,21 @@ const Lead = sequelize.define(
     phone: DataTypes.STRING,
     company: DataTypes.STRING,
     status: {
-      type: DataTypes.ENUM("new", "contacted", "qualified", "unqualified"),
+      type: DataTypes.STRING,
       defaultValue: "new",
     },
     source: {
-      type: DataTypes.ENUM(
-        "website",
-        "referral",
-        "campaign",
-        "cold-call",
-        "other",
-      ),
+      type: DataTypes.STRING,
       defaultValue: "website",
     },
     notes: DataTypes.TEXT,
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+    assignedTo: {
+      type: DataTypes.INTEGER,
+      field: "assigned_to",
+    },
+    createdBy: {
+      type: DataTypes.INTEGER,
+      field: "created_by",
     },
   },
   {

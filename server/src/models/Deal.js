@@ -17,6 +17,8 @@ const Deal = sequelize.define(
     description: DataTypes.TEXT,
     customerId: {
       type: DataTypes.INTEGER,
+      field: "customer_id",
+      allowNull: false,
       references: {
         model: Customer,
         key: "id",
@@ -27,25 +29,31 @@ const Deal = sequelize.define(
       allowNull: false,
     },
     stage: {
-      type: DataTypes.ENUM(
-        "prospect",
-        "negotiation",
-        "proposal",
-        "closed-won",
-        "closed-lost",
-      ),
+      type: DataTypes.STRING,
       defaultValue: "prospect",
     },
     probability: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
-    expectedCloseDate: DataTypes.DATE,
-    actualCloseDate: DataTypes.DATE,
-    notes: DataTypes.TEXT,
-    createdAt: {
+    expectedCloseDate: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      field: "expected_close_date",
+    },
+    actualCloseDate: {
+      type: DataTypes.DATE,
+      field: "actual_close_date",
+    },
+    notes: DataTypes.TEXT,
+    assignedTo: {
+      type: DataTypes.INTEGER,
+      field: "assigned_to",
+      allowNull: false,
+    },
+    createdBy: {
+      type: DataTypes.INTEGER,
+      field: "created_by",
+      allowNull: false,
     },
   },
   {

@@ -2,14 +2,18 @@
   "name": "crm-system",
   "version": "1.0.0",
   "description": "Customer Relationship Management System",
-  "main": "server/index.js",
+  "main": "server/src/server.js",
   "scripts": {
-    "start": "node server/index.js",
-    "dev": "nodemon server/index.js",
+    "start": "node server/src/server.js",
+    "dev": "nodemon server/src/server.js",
     "client": "cd client && npm start",
     "server": "cd server && npm start"
   },
-  "keywords": ["crm", "customer", "management"],
+  "keywords": [
+    "crm",
+    "customer",
+    "management"
+  ],
   "author": "",
   "license": "ISC"
 }

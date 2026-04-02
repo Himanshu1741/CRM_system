@@ -11,8 +11,19 @@ const User = sequelize.define(
       autoIncrement: true,
     },
     name: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return `${this.getDataValue("firstName")} ${this.getDataValue("lastName")}`.trim();
+      },
+    },
+    firstName: {
       type: DataTypes.STRING,
+      field: "first_name",
       allowNull: false,
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      field: "last_name",
     },
     email: {
       type: DataTypes.STRING,
@@ -26,6 +37,11 @@ const User = sequelize.define(
     role: {
       type: DataTypes.ENUM("admin", "manager", "user"),
       defaultValue: "user",
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      field: "is_active",
+      defaultValue: true,
     },
   },
   {

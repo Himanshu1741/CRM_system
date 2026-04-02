@@ -17,9 +17,22 @@ const Note = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+    leadId: {
+      type: DataTypes.INTEGER,
+      field: "lead_id",
+    },
+    customerId: {
+      type: DataTypes.INTEGER,
+      field: "customer_id",
+    },
+    dealId: {
+      type: DataTypes.INTEGER,
+      field: "deal_id",
+    },
+    createdBy: {
+      type: DataTypes.INTEGER,
+      field: "created_by",
+      allowNull: false,
     },
   },
   {

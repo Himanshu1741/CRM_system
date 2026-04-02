@@ -9,8 +9,14 @@ const Customer = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    firstName: {
       type: DataTypes.STRING,
+      field: "first_name",
+      allowNull: false,
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      field: "last_name",
       allowNull: false,
     },
     email: {
@@ -23,20 +29,28 @@ const Customer = sequelize.define(
     address: DataTypes.STRING,
     city: DataTypes.STRING,
     state: DataTypes.STRING,
-    zipCode: DataTypes.STRING,
+    zipCode: {
+      type: DataTypes.STRING,
+      field: "zip_code",
+    },
     country: DataTypes.STRING,
     status: {
-      type: DataTypes.ENUM("active", "inactive", "prospect"),
+      type: DataTypes.STRING,
       defaultValue: "prospect",
     },
     totalSpent: {
       type: DataTypes.DECIMAL(12, 2),
+      field: "total_spent",
       defaultValue: 0,
     },
     notes: DataTypes.TEXT,
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+    assignedTo: {
+      type: DataTypes.INTEGER,
+      field: "assigned_to",
+    },
+    createdBy: {
+      type: DataTypes.INTEGER,
+      field: "created_by",
     },
   },
   {
