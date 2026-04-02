@@ -1,11 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Navbar } from './components/Navbar'
-import Dashboard from './pages/Dashboard'
-import Leads from './pages/Leads'
-import Customers from './pages/Customers'
-import Deals from './pages/Deals'
-import Settings from './pages/Settings'
-import './index.css'
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Navbar } from "./components/Navbar";
+import "./index.css";
+import Activities from "./pages/Activities";
+import Customers from "./pages/Customers";
+import Dashboard from "./pages/Dashboard";
+import Deals from "./pages/Deals";
+import Leads from "./pages/Leads";
+import Notes from "./pages/Notes";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
+import Tasks from "./pages/Tasks";
 
 function App() {
   return (
@@ -18,11 +22,15 @@ function App() {
           <Route path="/leads" element={<Leads />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/deals" element={<Deals />} />
+          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/activities" element={<Activities />} />
+          <Route path="/notes" element={<Notes />} />
+          <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
       </div>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;

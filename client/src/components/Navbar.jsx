@@ -20,6 +20,18 @@ export const Navbar = () => {
           <Link to="/deals" className="hover:text-blue-400">
             Deals
           </Link>
+          <Link to="/tasks" className="hover:text-blue-400">
+            Tasks
+          </Link>
+          <Link to="/activities" className="hover:text-blue-400">
+            Activities
+          </Link>
+          <Link to="/notes" className="hover:text-blue-400">
+            Notes
+          </Link>
+          <Link to="/reports" className="hover:text-blue-400">
+            Reports
+          </Link>
           <Link to="/settings" className="hover:text-blue-400">
             Settings
           </Link>
