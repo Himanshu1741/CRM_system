@@ -5,9 +5,11 @@ Base URL: `http://localhost:3001/api`
 ## Authentication Endpoints
 
 ### POST /api/auth/register
+
 Register a new user account.
 
 **Request:**
+
 ```json
 {
   "name": "John Doe",
@@ -17,6 +19,7 @@ Register a new user account.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -31,9 +34,11 @@ Register a new user account.
 ```
 
 ### POST /api/auth/login
+
 Login with email and password.
 
 **Request:**
+
 ```json
 {
   "email": "john@example.com",
@@ -42,6 +47,7 @@ Login with email and password.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -56,14 +62,17 @@ Login with email and password.
 ```
 
 ### GET /api/auth/me
+
 Get current user profile. Requires JWT token.
 
 **Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -83,9 +92,11 @@ Authorization: Bearer <token>
 ## Leads Endpoints
 
 ### GET /api/leads
+
 Get all leads.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -100,7 +111,11 @@ Get all leads.
       "status": "new",
       "source": "website",
       "notes": "Interested in enterprise plan",
-      "assignedTo": { "id": "user_id", "name": "Jane Smith", "email": "jane@example.com" },
+      "assignedTo": {
+        "id": "user_id",
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      },
       "createdAt": "2026-04-02T10:00:00Z"
     }
   ]
@@ -108,12 +123,15 @@ Get all leads.
 ```
 
 ### GET /api/leads/:id
+
 Get a specific lead.
 
 ### POST /api/leads
+
 Create a new lead. Requires JWT token.
 
 **Request:**
+
 ```json
 {
   "firstName": "John",
@@ -128,9 +146,11 @@ Create a new lead. Requires JWT token.
 ```
 
 ### PUT /api/leads/:id
+
 Update a lead. Requires JWT token.
 
 ### DELETE /api/leads/:id
+
 Delete a lead. Requires JWT token.
 
 ---
@@ -138,15 +158,19 @@ Delete a lead. Requires JWT token.
 ## Customers Endpoints
 
 ### GET /api/customers
+
 Get all customers.
 
 ### GET /api/customers/:id
+
 Get a specific customer.
 
 ### POST /api/customers
+
 Create a new customer. Requires JWT token.
 
 **Request:**
+
 ```json
 {
   "firstName": "John",
@@ -166,9 +190,11 @@ Create a new customer. Requires JWT token.
 ```
 
 ### PUT /api/customers/:id
+
 Update a customer. Requires JWT token.
 
 ### DELETE /api/customers/:id
+
 Delete a customer. Requires JWT token.
 
 ---
@@ -176,15 +202,19 @@ Delete a customer. Requires JWT token.
 ## Deals Endpoints
 
 ### GET /api/deals
+
 Get all deals.
 
 ### GET /api/deals/:id
+
 Get a specific deal.
 
 ### POST /api/deals
+
 Create a new deal. Requires JWT token.
 
 **Request:**
+
 ```json
 {
   "title": "Enterprise Software License",
@@ -201,9 +231,11 @@ Create a new deal. Requires JWT token.
 **Deal Stages:** prospect, negotiation, proposal, closed-won, closed-lost
 
 ### PUT /api/deals/:id
+
 Update a deal. Requires JWT token.
 
 ### DELETE /api/deals/:id
+
 Delete a deal. Requires JWT token.
 
 ---
@@ -211,20 +243,25 @@ Delete a deal. Requires JWT token.
 ## Tasks Endpoints
 
 ### GET /api/tasks
+
 Get all tasks. Supports query filters.
 
 **Query Parameters:**
+
 - `status` - Filter by status (pending, in-progress, completed, cancelled)
 - `priority` - Filter by priority (low, medium, high, urgent)
 - `assignedTo` - Filter by assigned user ID
 
 ### GET /api/tasks/:id
+
 Get a specific task.
 
 ### POST /api/tasks
+
 Create a new task. Requires JWT token.
 
 **Request:**
+
 ```json
 {
   "title": "Follow up with client",
@@ -243,9 +280,11 @@ Create a new task. Requires JWT token.
 **Status:** pending, in-progress, completed, cancelled
 
 ### PUT /api/tasks/:id
+
 Update a task. Requires JWT token.
 
 ### DELETE /api/tasks/:id
+
 Delete a task. Requires JWT token.
 
 ---
@@ -253,20 +292,25 @@ Delete a task. Requires JWT token.
 ## Notes Endpoints
 
 ### GET /api/notes
+
 Get all notes. Supports query filters.
 
 **Query Parameters:**
+
 - `lead` - Filter by lead ID
 - `customer` - Filter by customer ID
 - `deal` - Filter by deal ID
 
 ### GET /api/notes/:id
+
 Get a specific note.
 
 ### POST /api/notes
+
 Create a new note. Requires JWT token.
 
 **Request:**
+
 ```json
 {
   "title": "Meeting Notes",
@@ -278,9 +322,11 @@ Create a new note. Requires JWT token.
 ```
 
 ### PUT /api/notes/:id
+
 Update a note. Requires JWT token.
 
 ### DELETE /api/notes/:id
+
 Delete a note. Requires JWT token.
 
 ---
@@ -288,21 +334,26 @@ Delete a note. Requires JWT token.
 ## Activities Endpoints
 
 ### GET /api/activities
+
 Get all activities. Supports query filters.
 
 **Query Parameters:**
+
 - `type` - Filter by type (call, email, meeting, note, task, status-change)
 - `lead` - Filter by lead ID
 - `customer` - Filter by customer ID
 - `deal` - Filter by deal ID
 
 ### GET /api/activities/:id
+
 Get a specific activity.
 
 ### POST /api/activities
+
 Create a new activity. Requires JWT token.
 
 **Request:**
+
 ```json
 {
   "type": "call",
@@ -316,6 +367,7 @@ Create a new activity. Requires JWT token.
 **Activity Types:** call, email, meeting, note, task, status-change
 
 ### DELETE /api/activities/:id
+
 Delete an activity. Requires JWT token.
 
 ---
@@ -323,29 +375,40 @@ Delete an activity. Requires JWT token.
 ## Reports Endpoints
 
 ### GET /api/reports
+
 Get available report types. Requires JWT token.
 
 **Response:**
+
 ```json
 {
   "success": true,
   "data": {
-    "reportTypes": ["sales-pipeline", "activity-summary", "lead-conversion", "team-performance"],
+    "reportTypes": [
+      "sales-pipeline",
+      "activity-summary",
+      "lead-conversion",
+      "team-performance"
+    ],
     "message": "Available report types"
   }
 }
 ```
 
 ### GET /api/reports/sales-pipeline
+
 Get sales pipeline report by stage. Requires JWT token.
 
 ### GET /api/reports/activity-summary
+
 Get activity summary report. Requires JWT token.
 
 ### GET /api/reports/lead-conversion
+
 Get lead conversion rate report. Requires JWT token.
 
 ### GET /api/reports/team-performance
+
 Get team performance report. Requires JWT token.
 
 ---
@@ -362,6 +425,7 @@ All endpoints return errors in the following format:
 ```
 
 ### Common HTTP Status Codes
+
 - `200` - Success
 - `201` - Created
 - `400` - Bad Request (missing required fields)
@@ -391,4 +455,4 @@ Authorization: Bearer <your_jwt_token>
 5. **Track Tasks** → POST /api/tasks (with token)
 6. **Log Activities** → POST /api/activities (with token)
 7. **Add Notes** → POST /api/notes (with token)
-8. **View Reports** → GET /api/reports/* (with token)
+8. **View Reports** → GET /api/reports/\* (with token)

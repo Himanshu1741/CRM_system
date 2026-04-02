@@ -49,18 +49,21 @@ npm install
 ### 4. Start Development Servers
 
 **Terminal 1 - Start Backend:**
+
 ```bash
 cd server
 npm run dev
 ```
 
 **Terminal 2 - Start Frontend:**
+
 ```bash
 cd client
 npm run dev
 ```
 
 The application will be available at:
+
 - Frontend: `http://localhost:3000`
 - Backend API: `http://localhost:3001/api`
 
@@ -73,16 +76,19 @@ MongoDB is already configured in the backend. Start MongoDB and the app will con
 ### Using MySQL
 
 1. Create the database:
+
 ```bash
 mysql -u root -p -e "CREATE DATABASE crm_system"
 ```
 
 2. Run migrations:
+
 ```bash
 mysql -u root -p crm_system < database/schema.sql
 ```
 
 3. Seed sample data:
+
 ```bash
 mysql -u root -p crm_system < database/seed/*.sql
 ```
@@ -92,6 +98,7 @@ mysql -u root -p crm_system < database/seed/*.sql
 See [API.md](./API.md) for complete API documentation.
 
 ### Core Endpoints
+
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
 - `GET/POST/PUT/DELETE /api/leads` - Lead management
@@ -105,36 +112,43 @@ See [API.md](./API.md) for complete API documentation.
 ## Core Features
 
 ### 1. Authentication
+
 - User registration and login
 - JWT-based authentication
 - Role-based access control (admin, manager, user)
 
 ### 2. Lead Management
+
 - Create, read, update, delete leads
 - Track lead source and status
 - Assign leads to team members
 
 ### 3. Customer Management
+
 - Manage customer profiles
 - Track customer information and history
 - Link customers to deals
 
 ### 4. Sales Pipeline
+
 - Manage deals through different stages
 - Track deal probability and expected close dates
 - Monitor pipeline value
 
 ### 5. Task Management
+
 - Create tasks with priority levels
 - Assign tasks to team members
 - Track task status and due dates
 
 ### 6. Activities & Notes
+
 - Log customer interactions (calls, emails, meetings)
 - Add notes to leads, customers, and deals
 - Track interaction history
 
 ### 7. Reports
+
 - Sales pipeline analysis
 - Activity summary
 - Lead conversion rates
@@ -155,6 +169,7 @@ See [API.md](./API.md) for complete API documentation.
 ## Backend Architecture
 
 ### Models
+
 - User - User accounts and authentication
 - Lead - Sales leads
 - Customer - Customer records
@@ -164,6 +179,7 @@ See [API.md](./API.md) for complete API documentation.
 - Activity - Activity log entries
 
 ### Controllers
+
 - Authentication
 - Lead management
 - Customer management
@@ -174,6 +190,7 @@ See [API.md](./API.md) for complete API documentation.
 - Report generation
 
 ### Middleware
+
 - JWT authentication
 - Role-based authorization
 - Error handling
@@ -226,16 +243,19 @@ curl -X POST http://localhost:3001/api/leads \
 ## Troubleshooting
 
 ### Server won't start
+
 - Check if port 3001 is in use: `lsof -i :3001`
 - Verify MongoDB/MySQL is running
 - Check `.env` configuration
 
 ### Frontend won't connect to API
+
 - Verify backend is running on port 3001
 - Check CORS settings in `server/src/app.js`
 - Look for errors in browser console
 
 ### Database connection issues
+
 - Verify MongoDB URI in `.env`
 - OR ensure MySQL server is running and credentials are correct
 - Check database exists and migrations have been run
