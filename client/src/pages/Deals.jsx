@@ -151,16 +151,23 @@ export default function Deals() {
   };
 
   const handleSave = async () => {
-    if (!formData.title || !formData.amount) {
-      setError("Please fill in all required fields");
+    if (!formData.title || !formData.amount || !formData.customerId) {
+      setError("Please fill in all required fields (Deal Name, Amount, Customer)");
       return;
     }
 
     try {
+      const dataToSend = {
+        ...formData,
+        customerId: parseInt(formData.customerId),
+        amount: parseFloat(formData.amount),
+        probability: parseInt(formData.probability),
+      };
+      
       if (editingId) {
-        await dealsAPI.update(editingId, formData);
+        await dealsAPI.update(editingId, dataToSend);
       } else {
-        await dealsAPI.create(formData);
+        await dealsAPI.create(dataToSend);
       }
       await fetchDeals();
       handleCloseDialog();
@@ -303,6 +310,15 @@ export default function Deals() {
             label="Deal Name"
             name="title"
             value={formData.title}
+            onChange={handleInputChange}
+            fullWidth
+            required
+          />
+          <TextField
+            label="Customer ID"
+            name="customerId"
+            type="number"
+            value={formData.customerId}
             onChange={handleInputChange}
             fullWidth
             required
