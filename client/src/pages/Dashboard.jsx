@@ -1,6 +1,7 @@
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import {
+  Alert,
   Box,
   Card,
   CircularProgress,
@@ -21,6 +22,7 @@ import {
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchStats();
@@ -122,6 +124,40 @@ export default function Dashboard() {
         response: err.response?.data,
         status: err.response?.status,
       });
+      const errorMsg =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to load dashboard data";
+      setError(errorMsg);
+      // Set a default stats object with zeros so we see the dashboard structure
+      setStats({
+        leads: {
+          total: 0,
+          byStatus: { new: 0, contacted: 0, qualified: 0 },
+          conversionRate: 0,
+        },
+        customers: { total: 0, active: 0 },
+        deals: {
+          total: 0,
+          byStage: {
+            prospecting: 0,
+            negotiation: 0,
+            proposal: 0,
+            won: 0,
+            lost: 0,
+          },
+          totalValue: 0,
+          avgValue: 0,
+          wonDeals: 0,
+          winRate: 0,
+        },
+        tasks: {
+          total: 0,
+          byStatus: { todo: 0, inProgress: 0, completed: 0 },
+          completionRate: 0,
+        },
+        notes: { total: 0 },
+      });
     } finally {
       setLoading(false);
     }
@@ -146,7 +182,15 @@ export default function Dashboard() {
     return (
       <Box sx={{ p: 3 }}>
         <Typography color="error" variant="h6">
-          Failed to load dashboard. Check browser console for details.
+          Failed to load dashboard.
+        </Typography>
+        {error && (
+          <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+            Error: {error}
+          </Typography>
+        )}
+        <Typography variant="body2" sx={{ mt: 2, color: "text.secondary" }}>
+          Check browser console (F12) for more details.
         </Typography>
       </Box>
     );
@@ -223,7 +267,11 @@ export default function Dashboard() {
         📊 Dashboard Analytics
       </Typography>
 
-      {/* Key Metrics */}
+      {error && (
+        <Alert severity="warning" sx={{ mb: 3 }}>
+          Failed to load live data: {error}. Showing default view.
+        </Alert>
+      )}
       <Grid container spacing={2} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
