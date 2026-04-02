@@ -106,7 +106,7 @@ export default function Reports() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedColumns, setSelectedColumns] = useState(
-    columnConfig.leads.map((col) => col.key)
+    columnConfig.leads.map((col) => col.key),
   );
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -136,7 +136,7 @@ export default function Reports() {
     setSelectedColumns((prev) =>
       prev.includes(columnKey)
         ? prev.filter((col) => col !== columnKey)
-        : [...prev, columnKey]
+        : [...prev, columnKey],
     );
   };
 
@@ -192,10 +192,7 @@ export default function Reports() {
 
     const timestamp = new Date().toISOString().split("T")[0];
     link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `${selectedModule}_report_${timestamp}.csv`
-    );
+    link.setAttribute("download", `${selectedModule}_report_${timestamp}.csv`);
     link.style.visibility = "hidden";
 
     document.body.appendChild(link);
@@ -273,7 +270,8 @@ export default function Reports() {
           </Typography>
           {startDate || endDate ? (
             <Typography variant="body2" sx={{ color: "#1976d2" }}>
-              <strong>Date Range:</strong> {startDate || "Any"} to {endDate || "Any"}
+              <strong>Date Range:</strong> {startDate || "Any"} to{" "}
+              {endDate || "Any"}
             </Typography>
           ) : null}
         </Box>
@@ -401,7 +399,10 @@ export default function Reports() {
             </Box>
 
             {filteredData.length > 5 && (
-              <Typography variant="caption" sx={{ color: "text.secondary", mt: 1 }}>
+              <Typography
+                variant="caption"
+                sx={{ color: "text.secondary", mt: 1 }}
+              >
                 Showing 5 of {filteredData.length} records
               </Typography>
             )}
@@ -409,89 +410,5 @@ export default function Reports() {
         </Card>
       )}
     </Box>
-  );
-}
-        {selectedReport === "sales-pipeline" && (
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Sales Pipeline</h2>
-            <div className="grid grid-cols-5 gap-4">
-              {["Prospect", "Negotiation", "Proposal", "Won", "Lost"].map(
-                (stage) => (
-                  <div
-                    key={stage}
-                    className="bg-gray-100 p-4 rounded text-center"
-                  >
-                    <h3 className="font-semibold">{stage}</h3>
-                    <p className="text-3xl font-bold text-blue-600 mt-2">0</p>
-                    <p className="text-sm text-gray-600">Deals</p>
-                  </div>
-                ),
-              )}
-            </div>
-          </div>
-        )}
-
-        {selectedReport === "activity-summary" && (
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Activity Summary</h2>
-            <div className="space-y-2">
-              {["Calls", "Emails", "Meetings", "Notes", "Tasks"].map(
-                (activity) => (
-                  <div
-                    key={activity}
-                    className="flex justify-between items-center p-2 border-b"
-                  >
-                    <span>{activity}</span>
-                    <span className="font-semibold">0</span>
-                  </div>
-                ),
-              )}
-            </div>
-          </div>
-        )}
-
-        {selectedReport === "lead-conversion" && (
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Lead Conversion Rate</h2>
-            <div className="space-y-4">
-              <div>
-                <p className="text-gray-600">Total Leads</p>
-                <p className="text-4xl font-bold text-blue-600">0</p>
-              </div>
-              <div>
-                <p className="text-gray-600">Converted to Customer</p>
-                <p className="text-4xl font-bold text-green-600">0%</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {selectedReport === "team-performance" && (
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Team Performance</h2>
-            <table className="w-full">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-4 py-2 text-left">Team Member</th>
-                  <th className="px-4 py-2 text-left">Deals Closed</th>
-                  <th className="px-4 py-2 text-left">Revenue</th>
-                  <th className="px-4 py-2 text-left">Activities</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td
-                    colSpan="4"
-                    className="px-4 py-8 text-center text-gray-500"
-                  >
-                    No data available
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    </div>
   );
 }
